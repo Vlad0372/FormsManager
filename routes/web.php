@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FillAppController;
+use App\Http\Controllers\AppFormController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +32,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    //Route::delete('/applications', [FillAppController::class, 'edit'])->name('applications');
 });
+//Route::post('applications', [FillAppController::class, 'tryStartFilling'])->name('toggleApprove');
+
+// Route::get('/applications', [FillAppController::class, 'tryStartFilling'])->middleware(['auth', 'verified'])->name('applications');
+// Route::get('/applications/edit', [FillAppController::class, 'edit'])->middleware(['auth', 'verified'])->name('applications.edit');
+// Route::post('send', [FillAppController::class, 'store'])->name('applications.send');
+
+Route::get('/app-form/create', [AppFormController::class, 'create'])->middleware(['auth', 'verified'])->name('app-form.create');
+Route::post('/app-form', [AppFormController::class, 'store'])->middleware(['auth', 'verified'])->name('app-form');
 
 require __DIR__.'/auth.php';
