@@ -8,12 +8,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
 
-class TerminateAppFormSessionJob implements ShouldQueue
+class BruhJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    protected $details;
+
+    public $details;
 
     /**
      * Create a new job instance.
@@ -21,7 +21,6 @@ class TerminateAppFormSessionJob implements ShouldQueue
     public function __construct($details)
     {
         $this->details = $details;
-        info("job created".$this->details['id']);
     }
 
     /**
@@ -29,13 +28,6 @@ class TerminateAppFormSessionJob implements ShouldQueue
      */
     public function handle(): void
     {
-        //info($this->details['id']);
-        info("job finished".$this->details['id']);
-
-        $appFormSession = DB::table('app_form_sessions')->where('id', $this->details['id'])->first();
-
-        if($appFormSession->is_alive == true){
-            DB::table('app_form_sessions')->where('id', $appFormSession->id)->update(['is_alive' => "0"]);
-        }
+        info($this->details);
     }
 }

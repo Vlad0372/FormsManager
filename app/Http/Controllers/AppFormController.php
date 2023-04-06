@@ -17,172 +17,145 @@ use Illuminate\Support\Facades\DB;
 use App\Console\Kernel;
 use App\Jobs\ProcessAppForm;
 use App\Jobs\TerminateAppFormSessionJob;
+use App\Jobs\BruhJob;
 use Carbon\Carbon;
 use Pheanstalk\Pheanstalk;
 
 class AppFormController extends Controller
 {
-    /**
-     * Show the form to create a new application.
-     */
-    public function create(): View//RedirectResponse
+    public function OccupyAppFormSession($seconds)
     {
-        $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
         $user = auth()->user();
 
-        if($user != null){
-            if($lastAppFormSession == null){
-                echo('null');
-                $newAppFormSession = new AppFormSession;
-    
-                $newAppFormSession->user_id = $user->id;
-                $newAppFormSession->user_name = $user->name;
-                $newAppFormSession->is_alive = true;
-    
-                $newAppFormSession->save();
-            }else{
-                echo('not_null');
+        $newAppFormSession = new AppFormSession;    
+        $newAppFormSession->user_id = $user->id;
+        $newAppFormSession->user_name = $user->name;
+        $newAppFormSession->is_alive = true;
+        $newAppFormSession->save();
 
-                if($lastAppFormSession->is_alive == false){
-                    $newAppFormSession = new AppFormSession;
-    
-                    $newAppFormSession->user_id = $user->id;
-                    $newAppFormSession->user_name = $user->name;
-                    $newAppFormSession->is_alive = true;
-    
-                    $newAppFormSession->save();
-                }
-            }
-        }
-       
-        $newAppFormSession = new AppFormSession;
-    
-                    $newAppFormSession->user_id = $user->id;
-                    $newAppFormSession->user_name = $user->name;
-                    $newAppFormSession->is_alive = true;
-    
-                    $newAppFormSession->save();
-                    
-        $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
-
-         //$details['id'] = $lastAppFormSession->id;
-        //  $start = Carbon::now();
-        //  $job = new TerminateAppFormSessionJob($details);
-        //  $job->delay($start->addSeconds(5));
-        //  dispatch($job, $details);
-        $details['to'] = 'harsukh21@gmail.com';
-        $details['name'] = 'Receiver Name';
-        $details['subject'] = 'Hello Laravelcode';
-        $details['message'] = 'Here goes all message body.';
-
-        TerminateAppFormSessionJob::dispatch('govno');
-       
-        
-         //TerminateAppFormSessionJob::dispatch($details);
-
-        //$appFormSession = DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->first();;
-        //var_dump($lastAppFormSession);
-        //var_dump($appFormSession);
-        //echo($lastAppFormSession->id);
-        //     $users = DB::table('users')->get();
- 
-    //     foreach ($users as $user) {
-    //     echo $user->name;
-    //     echo($users[0]->name);
-    // }
-    
-        //$array = json_decode($appFormSession, true);
-        //var_dump($appFormSession->id);
-        //\Log::info(json_encode($array->all()));
-        //info($appFormSession->id);
-        
-         
-
-        $bryh = 'bruh';
-
-        //$job = (new SendWelcomeEmailJob())
-        //->delay(Carbon::now()->addMinutes(10));
-        //dispatch($job);
-        //$dateTime = Carbon::now();
-        
-        //TerminateAppFormSession::dispatch()->delay($dateTime->addMinutes(1))->onConnection('database');;
-
-        //TerminateAppFormSession::dispatch()->onConnection('redis');
-        //\Artisan::call('queue:listen');
-       
-        //$sch = new Schedule(\DateTimeZone::EUROPE);
-        //\Artisan::call('schedule:run');
-        //\Artisan::schedule($sch);
-
-        //\Artisan::call('app:terminate-app-form-session');
-
-        //$job = (new TerminateAppFormSession())->delay(Carbon::now()->addMinutes(2));
-        //dispatch($job);
-
-        //dispatch(new ProcessAppFormJob($bryh));
-
-        //dd()
-        // $isSessionOccupied = true;
-        // $isSessionOccupied = false; 
-      
-        // if($isSessionOccupied){
-        //     $returnMsg = 'form-filling-occupied';
-        //     return redirect()->back()->with('status', $returnMsg);
-        // }else{
-        //     $returnMsg = 'form-filling-free';
-        //     return Redirect::route('applications.edit')->with('status', 'bruh');
-        // }
-        //return view('post.create');
-            
-        
-        
-
-        return view('app-form.create');
-    }
- 
-    public function OccupyAppFormSession($id)
-    {
-        $details['id'] = 'Md Obydullah';
+        $details['id'] = $newAppFormSession->id;
         $start = Carbon::now();
         $job = new TerminateAppFormSessionJob($details);
-        $job->delay($start->addSeconds(5));
-        
+        $job->delay($start->addSeconds($seconds));
+
         dispatch($job);
     }
-    private function ExtendAppFormSession()
+    private function ExtendAppFormSession($seconds)
     {
         $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
         $user = auth()->user();
 
-        if($lastAppFormSession->is_alive == true and $lastAppFormSession->user_id == $user->id){
-            //$lastAppFormSession->was_extended = true;
+        if($lastAppFormSession->user_id == $user->id){
+            DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['is_alive' => "0"]);
         }
+
+        $newAppFormSession = new AppFormSession;    
+        $newAppFormSession->user_id = $user->id;
+        $newAppFormSession->user_name = $user->name;
+        $newAppFormSession->is_alive = true;
+        $newAppFormSession->save();
+        
+        $details['id'] = $newAppFormSession->id;
+        $start = Carbon::now();
+        $job = new TerminateAppFormSessionJob($details);
+        $job->delay($start->addSeconds($seconds));
+
+        dispatch($job);
     }
+
+    /**
+    * Display the application form.
+    */
+    public function edit(): View
+    {
+        return view('app-form.create');
+    }
+
+    /**
+    * Display the application form.
+    */
+    public function create(): RedirectResponse
+    {
+        $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
+        $user = auth()->user();
+
+        // if($user != null){
+        //     if($lastAppFormSession == null){            
+        //         self::OccupyAppFormSession(40);
+                
+        //         $returnMsg = 'form-filling-free';
+        //         return Redirect::route('app-form.edit')->with('status', $returnMsg);
+        //     }else if($lastAppFormSession->user_id == $user->id){
+        //         $returnMsg = 'form-filling-free';
+        //         return Redirect::route('app-form.edit')->with('status', $returnMsg);
+        //     }
+        //     // }else if($lastAppFormSession->is_alive == false){
+        //     //     self::OccupyAppFormSession(40); 
+        //     // }|| $lastAppFormSession->is_alive == false)
+        // }
+
+        if($user != null){
+            if($lastAppFormSession == null || $lastAppFormSession->is_alive == false){            
+                self::OccupyAppFormSession(40);
+                
+                $returnMsg = 'form-filling-free';
+                return Redirect::route('app-form.edit')->with('status', $returnMsg)
+                                                       ->with('minutes', '2');
+            }
+
+            if($lastAppFormSession != null and $lastAppFormSession->is_alive == true and $lastAppFormSession->user_id == $user->id){
+                $returnMsg = 'form-filling-free';
+                return Redirect::route('app-form.edit')->with('status', $returnMsg)
+                                                       ->with('minutes', '2');
+            }
+        }
+     
+        $returnMsg = 'form-filling-occupied';
+        return Redirect::back()->with('status', $returnMsg);  
+    }
+ 
+    
     /**
      * Store a new application.
      */
     public function store(Request $request): RedirectResponse
     {
-        \Log::info(json_encode($request->all()));
+        //\Log::info(json_encode($request->all()));
 
-        $rules = [
-            'app_name' => 'required|string|min:3|max:30',
-            'description' => 'required|string|min:3|max:200',
-            'type' => 'required|in:1,2,3',
-            'place' => 'nullable|string|min:3|max:50',
-        ];
- 
-        $validator = $request->validateWithBag('appform', $rules);
-        
-        $newAppForm = new AppForm;
+        $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
+        $user = auth()->user();
 
-        $newAppForm->app_name = $request->app_name;
-        $newAppForm->description = $request->description;
-        $newAppForm->type = $request->type;
-        $newAppForm->place = $request->place;
+        if($lastAppFormSession->user_id == $user->id and $lastAppFormSession->is_alive){
+            DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['is_alive' => "0"]);
+            
+            $rules = [
+                'app_name' => 'required|string|min:3|max:30',
+                'description' => 'required|string|min:3|max:200',
+                'type' => 'required|in:1,2,3',
+                'place' => 'nullable|string|min:3|max:50',
+            ];
+     
+            $validator = $request->validateWithBag('appform', $rules);
+            
+            $newAppForm = new AppForm;
+    
+            $newAppForm->app_name = $request->app_name;
+            $newAppForm->description = $request->description;
+            $newAppForm->type = $request->type;
+            $newAppForm->place = $request->place;
+    
+            $newAppForm->save();
+    
+            return Redirect::route('dashboard')->withErrors($validator, 'appform');
+        }
 
-        $newAppForm->save();
-
-        return Redirect::route('dashboard')->withErrors($validator, 'appform');
+        return Redirect::route('dashboard');
+    }
+    public function update(Request $request): RedirectResponse
+    {
+        self::ExtendAppFormSession(40);
+        //return Redirect::route('dashboard');
+        return Redirect::back()->with('minutes', '2');;
+        //return Redirect::route('app-form.create')->with('status', 'form-updated');
     }
 }

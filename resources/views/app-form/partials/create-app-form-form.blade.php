@@ -19,13 +19,17 @@
             &nbsp;
             &nbsp;
             &nbsp;
-                
-            <x-primary-button onclick="bruh()">
-                {{ __('Extend') }}
-            </x-primary-button>        
+            
+            <form method="post" action="{{ route('app-form.update') }}">
+                @csrf  
+                @method('patch') 
+                    <x-primary-button>
+                        {{ __('Extend') }}
+                    </x-primary-button>
+            </form>   
     </div>
 
-    <form method="post" action="{{ route('app-form') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('app-form.store') }}" class="mt-6 space-y-6">
         @csrf
 
         <div>
