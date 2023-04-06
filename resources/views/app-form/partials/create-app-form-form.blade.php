@@ -12,10 +12,12 @@
         </p>
     </header>
     <div class="flex items-center justify-start mt-4" id="bruh">
-            <h2 class="text-lg font-medium text-gray-900">
+            <h2 id="sessionTimer" class="text-lg font-medium text-gray-900">
                 {{ __('0:00') }}
             </h2>
-
+            <!-- {{ session('parameter1') }} -->
+            {{ session('status') }}
+            {{ session('minutes') }}
             &nbsp;
             &nbsp;
             &nbsp;
@@ -26,8 +28,25 @@
                     <x-primary-button>
                         {{ __('Extend') }}
                     </x-primary-button>
-            </form>   
+            </form>
+            <form method="post" id="terminateSessionForm" action="{{ route('app-form.terminate') }}">
+                @csrf  
+                @method('delete') 
+            </form>            
     </div>
+    <p  id="govn" class="mt-1 text-sm text-gray-600">
+            bruh
+        </p>
+    <x-danger-button onclick="cringe('{{ session('minutes') }}')">
+        {{ __('GOVNO TEST') }}
+    </x-danger-button>  
+    <script type="text/javascript">
+        var minutes = "{{ session('minutes') }}";
+        //console.log('bru000h')
+        //console.log(uh);
+        //cringe(uh);
+        startTimer("sessionTimer", minutes);
+    </script>
 
     <form method="post" action="{{ route('app-form.store') }}" class="mt-6 space-y-6">
         @csrf
