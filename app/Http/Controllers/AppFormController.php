@@ -10,18 +10,16 @@ use App\Models\AppFormSession;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
-use App\Console\Kernel;
-use App\Jobs\ProcessAppForm;
 use App\Jobs\TerminateAppFormSessionJob;
-use App\Jobs\BruhJob;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 class AppFormController extends Controller
 {
-    private $sessionSeconds = 15;
+    private $sessionSeconds = 150;
     public function OccupyAppFormSession($seconds)
     {
         $user = auth()->user();
@@ -53,12 +51,10 @@ class AppFormController extends Controller
             DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['is_alive' => "0"]);
         }
     }
-
-    /**
-    * Display the application form.
-    */
     public function edit(): View
     {
+
+        Log::info(old('type'));
         return view("app-form.create");
     }
     public function create(): RedirectResponse
@@ -89,7 +85,13 @@ class AppFormController extends Controller
     }
     public function store(Request $request): RedirectResponse
     {
-        $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
+        
+
+        switch ($request->input('action')) {
+            case 'sendData':
+                Log::info("sendData");
+
+                $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
         $user = auth()->user();
 
         if($lastAppFormSession->user_id == $user->id and $lastAppFormSession->is_alive){
@@ -101,9 +103,18 @@ class AppFormController extends Controller
                 'type' => 'required|in:1,2,3',
                 'place' => 'nullable|string|min:3|max:50',
             ];
-     
-            $request->validate($rules);
-            
+            //$request->validate($rules)->withErrors();
+            //$validator = $request->validate($rules);
+            //$request->session()->invalidate();
+            //return redirect('register')->withErrors($validator, 'appform');
+            // $validator = Validator::make($request->all(), $rules);
+            // if($validator->fails()){
+            //     return redirect()->back()
+            //         ->withErrors($validator)
+            //         ->withInput();
+            // }
+            $validatedData = $request->validateWithBag('appform', $rules);
+
             $newAppForm = new AppForm;
     
             $newAppForm->app_name = $request->app_name;
@@ -112,9 +123,30 @@ class AppFormController extends Controller
             $newAppForm->place = $request->place;
     
             $newAppForm->save();
-    
+
             return Redirect::route('dashboard')->with('status', 'form-sent-successfully');
         }
+                break;
+    
+            case 'extendTime':
+                Log::info("extendTime");
+                $rules = [
+                    'app_name' => 'required|string|min:3|max:30',
+                    'description' => 'required|string|min:3|max:200',
+                    'type' => 'required|in:1,2,3',
+                    'place' => 'nullable|string|min:3|max:50',
+                ];
+         
+                $request->validate($rules);
+                self::ExtendAppFormSession($this->sessionSeconds);
+
+        session(['sessionSeconds' => $this->sessionSeconds]);
+        
+        return Redirect::back();
+                break;
+        }
+
+        
 
         return Redirect::route('dashboard');
     }
@@ -123,7 +155,7 @@ class AppFormController extends Controller
         self::ExtendAppFormSession($this->sessionSeconds);
 
         session(['sessionSeconds' => $this->sessionSeconds]);
-
+        
         return Redirect::back();
     }
     public function terminate(Request $request): RedirectResponse

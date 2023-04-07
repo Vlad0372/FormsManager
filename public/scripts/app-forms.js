@@ -23,10 +23,8 @@ function cringe(uh){
     
 
 function startTimer(elemId, passedSecs){
-
-
-    var seconds = passedSecs % 60;//9;
-    var minutes = Math.floor(passedSecs / 60); //1;
+    var seconds = passedSecs % 60;
+    var minutes = Math.floor(passedSecs / 60);
     var timeRemaining;
 
     tick();
@@ -55,3 +53,17 @@ function startTimer(elemId, passedSecs){
     }
 }
 
+function restoreSelectedOption(oldValue){
+
+    if(oldValue){
+        var selectedItem = document.getElementById("type");
+        selectedItem.value = oldValue;
+        showHideTextarea();
+    }else{
+        var selectedItem = document.getElementById("type");
+        selectedItem.value = 3;
+        
+    }
+    
+    
+}
