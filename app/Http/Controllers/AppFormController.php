@@ -21,6 +21,7 @@ use App\Jobs\BruhJob;
 use Carbon\Carbon;
 class AppFormController extends Controller
 {
+    private $sessionSeconds = 15;
     public function OccupyAppFormSession($seconds)
     {
         $user = auth()->user();
@@ -40,25 +41,17 @@ class AppFormController extends Controller
     }
     private function ExtendAppFormSession($seconds)
     {
+        self::TerminateAppFormSession();
+        self::OccupyAppFormSession($seconds);
+    }
+    private function TerminateAppFormSession()
+    {
         $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
         $user = auth()->user();
 
         if($lastAppFormSession->user_id == $user->id){
             DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['is_alive' => "0"]);
         }
-
-        $newAppFormSession = new AppFormSession;    
-        $newAppFormSession->user_id = $user->id;
-        $newAppFormSession->user_name = $user->name;
-        $newAppFormSession->is_alive = true;
-        $newAppFormSession->save();
-        
-        $details['id'] = $newAppFormSession->id;
-        $start = Carbon::now();
-        $job = new TerminateAppFormSessionJob($details);
-        $job->delay($start->addSeconds($seconds));
-
-        dispatch($job);
     }
 
     /**
@@ -66,12 +59,8 @@ class AppFormController extends Controller
     */
     public function edit(): View
     {
-        return view('app-form.create');
+        return view("app-form.create");
     }
-
-    /**
-    * Display the application form.
-    */
     public function create(): RedirectResponse
     {
         $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
@@ -79,31 +68,27 @@ class AppFormController extends Controller
 
         if($user != null){
             if($lastAppFormSession == null || $lastAppFormSession->is_alive == false){            
-                self::OccupyAppFormSession(40);
-                
-                //session(['parameter1' => 'bruh']);
-                return Redirect::route('app-form.edit')->with('status', 'form-filling-free')
-                                                       ->with('minutes', '2');
+                self::OccupyAppFormSession($this->sessionSeconds);
+
+                session(['sessionSeconds' => $this->sessionSeconds]);
+
+                return Redirect::route('app-form.edit')->with('status', 'form-filling-free');
             }
 
             if($lastAppFormSession != null and $lastAppFormSession->is_alive == true and $lastAppFormSession->user_id == $user->id){
-                //session(['parameter1' => 'bruh']);               
-                return Redirect::route('app-form.edit')->with('status', 'form-filling-free')
-                                                       ->with('minutes', '2');
+                self::TerminateAppFormSession();
+                self::OccupyAppFormSession($this->sessionSeconds);
+
+                session(['sessionSeconds' => $this->sessionSeconds]);
+
+                return Redirect::route('app-form.edit')->with('status', 'form-filling-free');
             }
         }
 
         return Redirect::back()->with('status', 'form-filling-occupied');  
     }
- 
-    
-    /**
-     * Store a new application.
-     */
     public function store(Request $request): RedirectResponse
     {
-        //\Log::info(json_encode($request->all()));
-
         $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
         $user = auth()->user();
 
@@ -135,19 +120,15 @@ class AppFormController extends Controller
     }
     public function update(Request $request): RedirectResponse
     {
-        //self::ExtendAppFormSession(40);
-        //return Redirect::route('dashboard');
-        return Redirect::back()->with('minutes', '32');
-        //return Redirect::route('app-form.create')->with('status', 'form-updated');
+        self::ExtendAppFormSession($this->sessionSeconds);
+
+        session(['sessionSeconds' => $this->sessionSeconds]);
+
+        return Redirect::back();
     }
     public function terminate(Request $request): RedirectResponse
     {
-        $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
-        $user = auth()->user();
-
-        if($lastAppFormSession->user_id == $user->id){
-            DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['is_alive' => "0"]);
-        }
+        self::TerminateAppFormSession();
         
         return Redirect::route('dashboard')->with('status', 'session-terminated');
     }

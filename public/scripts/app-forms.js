@@ -20,23 +20,29 @@ function cringe(uh){
     console.log('bru_c222ringe_h')
     console.log(uh);
 }
+    
 
-function startTimer(elemId, minutes){
-    var seconds = 0;
-    var minutes = 1;
+function startTimer(elemId, passedSecs){
+
+
+    var seconds = passedSecs % 60;//9;
+    var minutes = Math.floor(passedSecs / 60); //1;
     var timeRemaining;
 
-    var x = setInterval(function(){   
-        
+    tick();
+
+    var x = setInterval(tick, 1000);
+
+    function tick(){
         if(seconds < 10){
             timeRemaining = minutes + ":0" + seconds; 
         }else{
             timeRemaining = minutes + ":" + seconds; 
         }
         document.getElementById(elemId).innerHTML = timeRemaining;
-
+    
         seconds -= 1;
-
+    
         if(seconds < 0){
             if(minutes > 0){
                 minutes -= 1;
@@ -45,6 +51,7 @@ function startTimer(elemId, minutes){
                 clearInterval(x);
                 document.forms['terminateSessionForm'].submit();
             }          
-        }          
-    }, 1000);
+        }     
+    }
 }
+
