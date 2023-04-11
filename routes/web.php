@@ -44,7 +44,6 @@ Route::middleware('auth')->group(function () {
 Route::get('/app-form/create', [AppFormController::class, 'edit'])->middleware(['auth', 'verified'])->name('app-form.edit');
 Route::get('/app-form', [AppFormController::class, 'create'])->middleware(['auth', 'verified'])->name('app-form.create');
 Route::post('/app-form', [AppFormController::class, 'store'])->middleware(['auth', 'verified'])->name('app-form.store');
-Route::patch('/app-form', [AppFormController::class, 'update'])->middleware(['auth', 'verified'])->name('app-form.update');
 Route::delete('/app-form', [AppFormController::class, 'terminate'])->middleware(['auth', 'verified'])->name('app-form.terminate');
 
 require __DIR__.'/auth.php';

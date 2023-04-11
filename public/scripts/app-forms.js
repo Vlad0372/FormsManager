@@ -8,19 +8,23 @@ function showHideTextarea(){
         txtarea.style.display = "none";
     }
 }
-function bruh(par){
-    //session()->all();
-    //var govno = {{ Session::get(par) }};
-    console.log(par);
-    console.log('test..');
-    //console.log("{{ Session::get('parameter1')}}");
+
+function saveScrollPos(){
+    scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
+    localStorage.setItem("formScrollPos", scrollPos);
 }
-function cringe(uh){
-    //var uh = "{{ session('minutes') }}";
-    console.log('bru_c222ringe_h')
-    console.log(uh);
+
+function getSavedScrollPos(){
+    return localStorage.getItem("formScrollPos");
 }
-    
+
+function getCurrentScrollPos(){
+    console.log(document.documentElement.scrollTop || document.body.scrollTop);
+}
+
+function setCurrentScrollPos(pos){
+    document.documentElement.scrollTop = document.body.scrollTop = pos;
+}
 
 function startTimer(elemId, passedSecs){
     var seconds = passedSecs % 60;
@@ -54,16 +58,12 @@ function startTimer(elemId, passedSecs){
 }
 
 function restoreSelectedOption(oldValue){
-
     if(oldValue){
         var selectedItem = document.getElementById("type");
         selectedItem.value = oldValue;
         showHideTextarea();
     }else{
         var selectedItem = document.getElementById("type");
-        selectedItem.value = 3;
-        
-    }
-    
-    
+        selectedItem.value = 3;  
+    } 
 }
