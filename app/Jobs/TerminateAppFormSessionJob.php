@@ -21,7 +21,6 @@ class TerminateAppFormSessionJob implements ShouldQueue
     public function __construct($details)
     {
         $this->details = $details;
-        //info("job created".$this->details['id']);
     }
 
     /**
@@ -29,8 +28,6 @@ class TerminateAppFormSessionJob implements ShouldQueue
      */
     public function handle(): void
     {
-        //info("job finished".$this->details['id']);
-
         $appFormSession = DB::table('app_form_sessions')->where('id', $this->details['id'])->first();
 
         if($appFormSession->is_alive == true){

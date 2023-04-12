@@ -10,7 +10,7 @@
             
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
-                    @include('app-form.partials.create-app-form-form')
+                    @include('app-form.partials.edit-app-form-form')
                 </div>
             </div>
 

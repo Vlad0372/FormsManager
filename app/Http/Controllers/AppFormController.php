@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\URL;
 
 class AppFormController extends Controller
 {
-    private $sessionSeconds = 120;
+    private $sessionSeconds = 20;//120;
     public function OccupyAppFormSession($seconds)
     {
         $user = auth()->user();
@@ -55,7 +55,7 @@ class AppFormController extends Controller
     }
     public function edit(): View
     {
-        return view("app-form.create");
+        return view("app-form.edit");
     }
     public function create(): RedirectResponse
     {
@@ -92,6 +92,8 @@ class AppFormController extends Controller
     {
         switch ($request->input('action')) {
             case 'sendData':
+                self::ExtendAppFormSession($this->sessionSeconds);
+
                 $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
                 $user = auth()->user();
 
@@ -102,7 +104,7 @@ class AppFormController extends Controller
                         'type' => 'required|in:1,2,3',
                         'place' => 'nullable|string|min:3|max:50',
                     ];
-           
+                    
                     $request->validateWithBag('appform', $rules);
 
                     $newAppForm = new AppForm;
@@ -113,9 +115,9 @@ class AppFormController extends Controller
                     $newAppForm->place = $request->place;
     
                     $newAppForm->save();
+                
+                    self::TerminateAppFormSession();
 
-                    DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['is_alive' => "0"]);
-                    
                     return Redirect::route('dashboard')->with('status', 'form-sent-successfully');
                 }
 
