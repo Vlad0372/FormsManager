@@ -4,11 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Validation\ValidationException;
-
-use Illuminate\Support\Facades\Log;
-
 class StoreAppSessionRequest extends FormRequest
 {
     protected $errorBag = 'appform';
@@ -28,6 +23,11 @@ class StoreAppSessionRequest extends FormRequest
      */
     public function rules(): array
     {
+        return ($this->input('action') == 'sendData' ? $this->store() : $this->update()); 
+    }
+
+    protected function store()
+    {
         return [
             'app_name' => 'required|string|min:3|max:30',
             'author_id' => 'nullable',
@@ -37,36 +37,15 @@ class StoreAppSessionRequest extends FormRequest
             'place' => 'nullable|string|min:3|max:50',
         ];
     }
-
-    /**
-     * Handle a failed validation attempt.
-     *
-     * @param  \Illuminate\Contracts\Validation\Validator  $validator
-     * @return void
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    protected function failedValidation(Validator $validator)
+    protected function update()
     {
-        if($this->wantsJson())
-        {
-            $response = response()->json([
-                'success' => false,
-                'message' => 'Ops! Some errors occurred',
-                'errors' => $validator->errors()
-            ]);            
-        }else{
-            Log::info($validator->getMessageBag());
-
-            $response = redirect()
-                ->route('dashboard')
-                ->with('message', 'Ops! Some errors occurred')
-                ->withErrors($validator);
-               
-        }
-        
-        throw (new ValidationException($validator, $response))
-            ->errorBag($this->errorBag)
-            ->redirectTo($this->getRedirectUrl());
+        return [
+            'app_name' => 'nullable',
+            'author_id' => 'nullable',
+            'author_name' => 'nullable',
+            'description' => 'nullable',
+            'type' => 'nullable',
+            'place' => 'nullable',
+        ];
     }
 }

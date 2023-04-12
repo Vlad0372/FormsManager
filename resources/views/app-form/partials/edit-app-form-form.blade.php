@@ -52,8 +52,7 @@
             <textarea name="place" type="text" maxlength="50" placeholder="Describe the place where it happened"  class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full mt-1 -mb-1">{{ old('place') }}</textarea>
             <x-input-error :messages="$errors->appform->first('place')" class="mt-2" /> 
         </div>
-        <input type="text" name="author_name" value="user_name">
-        <input type="text" name="author_id" value="user_id">
+        
         <x-primary-button name="action" value="sendData">
             {{ __('Send') }}
         </x-primary-button>     

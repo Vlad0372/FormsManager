@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAppSessionRequest;
 use App\Http\Controllers\DateTimeZone;
-use App\Jobs\ProcessAppFormJob;
 use App\Models\AppForm;
 use App\Models\AppFormSession;
 use Illuminate\Console\Scheduling\Schedule;
@@ -21,7 +20,7 @@ use Illuminate\Support\Facades\URL;
 
 class AppFormController extends Controller
 {
-    private $sessionSeconds = 40;//120;
+    private $sessionSeconds = 20;//120;
 
     public function GetAppFormSessionSecondsLeft(){
         $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
@@ -49,23 +48,15 @@ class AppFormController extends Controller
         $newAppFormSession->save();
         
         session(['sessionSeconds' => $seconds]);
-        //$details['id'] = $newAppFormSession->id;
-        //$start = Carbon::now();
-        //$job = new TerminateAppFormSessionJob($details);
-        //$job->delay($start->addSeconds($seconds));
-
-        //dispatch($job);
     }
     private function ExtendAppFormSession($seconds)
     {
-        //self::TerminateAppFormSession();
-        //self::OccupyAppFormSession($seconds);
         $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
         $user = auth()->user();
-        //Log::info("bruh time extended");
+
         if($lastAppFormSession->user_id == $user->id){
             DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['is_alive' => "1"]);
-            DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['expires_at' => Carbon::now()->addSeconds($seconds)]);     
+            DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['expires_at' => Carbon::now()->addSeconds($seconds)]);      
         }
     }
     private function TerminateAppFormSession()
@@ -74,8 +65,7 @@ class AppFormController extends Controller
         $user = auth()->user();
 
         if($lastAppFormSession->user_id == $user->id){
-            DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['is_alive' => "0"]);
-            DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['expires_at' => Carbon::createFromTimestamp(0)->addDay()]);     
+            DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['is_alive' => "0"]);   
         }
     }
     public function edit(): View
@@ -84,114 +74,83 @@ class AppFormController extends Controller
     }
     public function create(): RedirectResponse
     {
-        $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
-        Log::info("create bruh?");
-        //
-        // $currentTime = Carbon::now();
-        // $appForm_expires_at = new Carbon($lastAppFormSession->expires_at);
-
-        // $secondsLeft = $currentTime->diffInSeconds($appForm_expires_at, false);
-       
-        // Log::info("current time:". $currentTime);
-        // Log::info("seconds left:". $lastAppFormSession->expires_at);
-        // Log::info("carb left:". $secondsLeft);
-       
-        //
-
+        $lastAppFormSession = DB::table('app_form_sessions')->latest()->first(); 
         $user = auth()->user();
 
-        if($user != null){
-            session(['_old_input.app_name' => '']);
-            session(['_old_input.description' => '']);
-            session(['_old_input.type' => '3']);
-            session(['_old_input.place' => '']);
+        session(['_old_input.app_name' => '']);
+        session(['_old_input.description' => '']);
+        session(['_old_input.type' => '3']);
+        session(['_old_input.place' => '']);
 
-            if($lastAppFormSession == null){  //$lastAppFormSession->is_alive == false){            
-                self::OccupyAppFormSession($this->sessionSeconds);
+        if($lastAppFormSession == null){          
+            self::OccupyAppFormSession($this->sessionSeconds);
 
-                //session(['sessionSeconds' => $this->sessionSeconds]);
-
-                return Redirect::route('app-form.edit')->with('status', 'form-filling-free');
-            }else{
+            return Redirect::route('app-form.edit')->with('status', 'form-filling-free');
+        }else{
                
-                $secondsLeft = self::GetAppFormSessionSecondsLeft();
+            $secondsLeft = self::GetAppFormSessionSecondsLeft();
                 
-                if($secondsLeft != null){
-                    if($secondsLeft < 1){
-                        self::OccupyAppFormSession($this->sessionSeconds);
-                
-                        return Redirect::route('app-form.edit')->with('status', 'form-filling-free');
-                    }
-
-                    if($secondsLeft > 0 and $lastAppFormSession->user_id == $user->id){
-                        self::ExtendAppFormSession($this->sessionSeconds);
-
-                        return Redirect::route('app-form.edit')->with('status', 'form-filling-free');
-                    }                  
-                }
+            if($secondsLeft < 1 || $lastAppFormSession->is_alive == false){
+                //====== if previous user left the appform page, and the javascript method didn't triggered the 'terminate' endpoint
+                DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['is_alive' => "0"]);
+                //======     
+                self::OccupyAppFormSession($this->sessionSeconds);
+            
+                return Redirect::route('app-form.edit')->with('status', 'form-filling-free');
             }
 
-            // if($lastAppFormSession != null and $lastAppFormSession->is_alive == true and $lastAppFormSession->user_id == $user->id){
-            //     self::TerminateAppFormSession();
-            //     self::OccupyAppFormSession($this->sessionSeconds);
+            if($secondsLeft > 0 and $lastAppFormSession->user_id == $user->id){
+                self::ExtendAppFormSession($this->sessionSeconds);
 
-            //     //session(['sessionSeconds' => $this->sessionSeconds]);
-
-            //     return Redirect::route('app-form.edit')->with('status', 'form-filling-free');
-            // }
-        }
-
+                return Redirect::route('app-form.edit')->with('status', 'form-filling-free');
+            }    
+        }    
+        
         return Redirect::back()->with('status', 'form-filling-occupied');  
     }
     public function store(StoreAppSessionRequest $request): RedirectResponse
     {
-        Log::info("vv?");
-        // switch ($request->input('action')) {
-        //     case 'sendData':
-        //         Log::info("vruh?");
-        //         self::ExtendAppFormSession($this->sessionSeconds);
+        switch ($request->input('action')) {
+            case 'sendData':
+                self::ExtendAppFormSession($this->sessionSeconds);
 
-        //         $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
-        //         $secondsLeft = self::GetAppFormSessionSecondsLeft();
-        //         $user = auth()->user();
+                $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
+                $secondsLeft = self::GetAppFormSessionSecondsLeft();
+                $user = auth()->user();
 
-        //         if($lastAppFormSession->user_id == $user->id and $secondsLeft > 0){//$lastAppFormSession->is_alive){
-        //             $request->validateWithBag('appform', $request->rules());
-
-        //             $newAppForm = new AppForm;
+                if($lastAppFormSession->user_id == $user->id and $secondsLeft > 0){
+                    $newAppForm = new AppForm;
     
-        //             $newAppForm->app_name = $request->app_name;
-        //             $newAppForm->author_id = $user->id;
-        //             $newAppForm->author_name = $user->name;
-        //             $newAppForm->description = $request->description;
-        //             $newAppForm->type = $request->type;
-        //             $newAppForm->place = $request->place;
+                    $newAppForm->app_name = $request->app_name;
+                    $newAppForm->author_id = $user->id;
+                    $newAppForm->author_name = $user->name;
+                    $newAppForm->description = $request->description;
+                    $newAppForm->type = $request->type;
+                    $newAppForm->place = $request->place;
     
-        //             $newAppForm->save();
+                    $newAppForm->save();
                 
-        //             self::TerminateAppFormSession();
+                    self::TerminateAppFormSession();
+                    
+                    return Redirect::route('dashboard')->with('status', 'form-sent-successfully');
+                }
 
-        //             return Redirect::route('dashboard')->with('status', 'form-sent-successfully');
-        //         }
-
-        //         break;
+                break;
     
-        //     case 'extendTime':
-        //         Log::info("huh?");
-        //         self::ExtendAppFormSession($this->sessionSeconds);
+            case 'extendTime':
+                self::ExtendAppFormSession($this->sessionSeconds);
 
-        //         session(['_old_input.app_name' => $request->app_name]);
-        //         session(['_old_input.description' => $request->description]);
-        //         session(['_old_input.type' => $request->type]);
-        //         session(['_old_input.place' => $request->place]);
-        //         //session(['sessionSeconds' => $this->sessionSeconds]);
+                session(['_old_input.app_name' => $request->app_name]);
+                session(['_old_input.description' => $request->description]);
+                session(['_old_input.type' => $request->type]);
+                session(['_old_input.place' => $request->place]);
         
-        //         return Redirect::back();
-        // }
-        self::ExtendAppFormSession($this->sessionSeconds); 
-        return Redirect::back();   
+                return Redirect::back();
+        }
+        
         return Redirect::route('dashboard');
     }
+  
     public function terminate(Request $request): RedirectResponse
     {
         self::TerminateAppFormSession();

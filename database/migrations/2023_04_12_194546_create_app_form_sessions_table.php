@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('user_id');
             $table->string('user_name');
             $table->boolean('is_alive');
-            $table->timestamp('expires_at');
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
         });
     }

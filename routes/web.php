@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\FillAppController;
 use App\Http\Controllers\AppFormController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,9 +29,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/app-form/edit', [AppFormController::class, 'edit'])->middleware(['auth', 'verified'])->name('app-form.edit');
-Route::get('/app-form', [AppFormController::class, 'create'])->middleware(['auth', 'verified'])->name('app-form.create');
-Route::post('/app-form', [AppFormController::class, 'store'])->middleware(['auth', 'verified'])->name('app-form.store');
-Route::delete('/app-form', [AppFormController::class, 'terminate'])->middleware(['auth', 'verified'])->name('app-form.terminate');
+Route::middleware('auth')->group(function () {
+    Route::get('/app-form/edit', [AppFormController::class, 'edit'])->name('app-form.edit');
+    Route::get('/app-form', [AppFormController::class, 'create'])->name('app-form.create');
+    Route::post('/app-form', [AppFormController::class, 'store'])->name('app-form.store');
+    Route::delete('/app-form', [AppFormController::class, 'terminate'])->name('app-form.terminate');
+});
+
 
 require __DIR__.'/auth.php';
