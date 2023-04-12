@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('app_forms', function (Blueprint $table) {
+        Schema::create('app_form_sessions', function (Blueprint $table) {
             $table->id();
-            $table->string('app_name');
-            $table->enum('type', array('glitch', 'information', 'question'))->default('question');
-            $table->text('description');
-            $table->text('place')->nullable();
+            $table->string('user_id');
+            $table->string('user_name');
+            $table->boolean('is_alive');
+            $table->timestamp('expires_at');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('app_forms');
+        Schema::dropIfExists('app_form_sessions');
     }
 };

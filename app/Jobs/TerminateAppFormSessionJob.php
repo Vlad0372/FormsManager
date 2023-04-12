@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TerminateAppFormSessionJob implements ShouldQueue
 {
@@ -21,6 +22,7 @@ class TerminateAppFormSessionJob implements ShouldQueue
     public function __construct($details)
     {
         $this->details = $details;
+        Log::info("bruh construct");
     }
 
     /**
@@ -29,9 +31,10 @@ class TerminateAppFormSessionJob implements ShouldQueue
     public function handle(): void
     {
         $appFormSession = DB::table('app_form_sessions')->where('id', $this->details['id'])->first();
-
+        DB::table('app_form_sessions')->where('id', $appFormSession->id)->update(['is_alive' => "5"]);
         if($appFormSession->is_alive == true){
-            DB::table('app_form_sessions')->where('id', $appFormSession->id)->update(['is_alive' => "0"]);
+            DB::table('app_form_sessions')->where('id', $appFormSession->id)->update(['is_alive' => "5"]);
         }
+        Log::info("terminated. id:".$appFormSession->id);
     }
 }
