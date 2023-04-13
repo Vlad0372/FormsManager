@@ -8,19 +8,14 @@ use Illuminate\View\Component;
 
 class Td extends Component
 {
-    // public $value = "";
-    
-    // public function __construct($text)
-    // {
-    //     $this->value = $text;
-    // }
-    
+    public $textWrap;
+
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public function __construct($wrap = false)
     {
-        //
+        $this->textWrap = $wrap;
     }
 
     /**

@@ -22,7 +22,7 @@
                         <table class="border-collapse table-fixed w-full text-sm">
                             <thead>
                                 <tr>
-                                    <x-tables.th>Application name</x-tables.th>
+                                    <x-tables.th>Name</x-tables.th>
                                     <x-tables.th>Type</x-tables.th>
                                     <x-tables.th>Description</x-tables.th>
                                     <x-tables.th>Place</x-tables.th>
@@ -32,10 +32,10 @@
                             <tbody class="bg-white dark:bg-slate-800">
                             @foreach($myAppForms as $appForm)
                                 <tr>
-                                    <x-tables.td>{{ $appForm->app_name }}</x-tables.td>
+                                    <x-tables.td :wrap="true">{{ $appForm->app_name }}</x-tables.td>
                                     <x-tables.td>{{ $appForm->type }}</x-tables.td>
-                                    <x-tables.td>{{ $appForm->description }}</x-tables.td>
-                                    <x-tables.td>{{ $appForm->place }}</x-tables.td>
+                                    <x-tables.td :wrap="true">{{ $appForm->description }}</x-tables.td>
+                                    <x-tables.td :wrap="true">{{ $appForm->place }}</x-tables.td>
                                     <x-tables.td>
                                         <x-primary-button>
                                             {{ __('Edit') }}
