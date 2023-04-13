@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MyAppFormsController;
 use App\Http\Controllers\AppFormController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/app-form', [AppFormController::class, 'create'])->name('app-form.create');
     Route::post('/app-form', [AppFormController::class, 'store'])->name('app-form.store');
     Route::delete('/app-form', [AppFormController::class, 'terminate'])->name('app-form.terminate');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/my-app-forms/edit', [MyAppFormsController::class, 'edit'])->name('my-app-forms.edit');
+    
 });
 
 

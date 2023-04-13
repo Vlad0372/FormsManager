@@ -39,7 +39,11 @@
                         </x-dropdown-link>
 
                         <x-dropdown-link :href="route('app-form.create')">
-                            {{ __('Applications') }}
+                            {{ __('Fill in the form') }}
+                        </x-dropdown-link>
+
+                        <x-dropdown-link :href="route('my-app-forms.edit')">
+                            {{ __('My applications') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -92,8 +96,13 @@
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
+
                 <x-responsive-nav-link :href="route('app-form.create')">
-                    {{ __('Applications') }}
+                    {{ __('Fill in the form') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('my-app-forms.edit')">
+                    {{ __('My applications') }}
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
