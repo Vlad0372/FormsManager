@@ -22,6 +22,6 @@ class MyAppFormsController extends Controller
 {
     public function edit(): View
     {
-        return view("my-app-forms.edit");
+        return view('my-app-forms.edit', ['myAppForms' => AppForm::all()]);
     }
 }

@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\URL;
 
 class AppFormController extends Controller
 {
-    private $sessionSeconds = 20;//120;
+    private $sessionSeconds = 120;
 
     public function GetAppFormSessionSecondsLeft(){
         $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
