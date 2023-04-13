@@ -42,7 +42,7 @@
                             {{ __('Fill in the form') }}
                         </x-dropdown-link>
 
-                        <x-dropdown-link :href="route('my-app-forms.edit')">
+                        <x-dropdown-link :href="route('my-app-forms')">
                             {{ __('My applications') }}
                         </x-dropdown-link>
 
@@ -73,6 +73,7 @@
             @include('layouts.partials.form-sent-successfully')
             @include('layouts.partials.session-is-occupied')
             @include('layouts.partials.session-is-terminated')
+            @include('layouts.partials.app-form-updated')
             
         </div>
     </div>
@@ -101,7 +102,7 @@
                     {{ __('Fill in the form') }}
                 </x-responsive-nav-link>
 
-                <x-responsive-nav-link :href="route('my-app-forms.edit')">
+                <x-responsive-nav-link :href="route('my-app-forms')">
                     {{ __('My applications') }}
                 </x-responsive-nav-link>
 
