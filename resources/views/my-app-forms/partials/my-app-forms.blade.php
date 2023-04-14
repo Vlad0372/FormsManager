@@ -38,11 +38,13 @@
                                         <x-tables.td :wrap="true">{{ $appForm->description }}</x-tables.td>
                                         <x-tables.td :wrap="true">{{ $appForm->place }}</x-tables.td>
                                         <x-tables.td>
-                                            <a href="{{ route('my-app-forms.edit', ['id'=>$appForm->id]) }}">
-                                                <x-primary-button>
+                                            <form method="post" action="{{ route('my-app-forms.edit', ['id'=>$appForm->id]) }}">
+                                                @csrf
+                                                @method('get')    
+                                                <x-primary-button name="action" value="repopulateForm">
                                                     {{ __('Edit') }}
                                                 </x-primary-button>
-                                            </a>
+                                            </form>
                                         </x-tables.td>                          
                                     </tr>
                                 @endforeach    

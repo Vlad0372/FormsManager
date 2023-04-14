@@ -18,7 +18,8 @@
             @method('patch')
 
             @include('app-form.partials.app-form-body')
-            
+           
+            <input type="hidden" value="{{ $appFormId }}" name="appFormId">
             <x-primary-button name="action" value="updateData">
                 {{ __('Save') }}
             </x-primary-button>     

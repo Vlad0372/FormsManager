@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreAppSessionRequest;
+use App\Http\Requests\AppFormRequest;
 use App\Http\Controllers\DateTimeZone;
 use App\Models\AppForm;
 use App\Models\AppFormSession;
@@ -108,7 +108,7 @@ class AppFormController extends Controller
         
         return Redirect::back()->with('status', 'form-filling-occupied');  
     }
-    public function store(StoreAppSessionRequest $request): RedirectResponse
+    public function store(AppFormRequest $request): RedirectResponse
     {
         switch ($request->input('action')) {
             case 'sendData':

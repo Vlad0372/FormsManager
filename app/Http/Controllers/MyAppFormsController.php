@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreAppSessionRequest;
+use App\Http\Requests\AppFormRequest;
 use App\Http\Controllers\DateTimeZone;
 use App\Models\AppForm;
 use App\Models\AppFormSession;
@@ -25,24 +25,47 @@ class MyAppFormsController extends Controller
         return view('my-app-forms.index', ['myAppForms' => AppForm::all()->where('author_id','=',auth()->user()->id)]);
     }
 
-    public function edit(Request $request): View
-    {  
-        //Log::info('id:  '.$request->id);
-        $user = auth()->user();
-        $appForm = AppForm::find($request->id);
+    public function edit(Request $request, string $Id): View
+    {        
+        Log::info($Id);
 
-        if($appForm != null and $appForm->author_id == $user->id){
-            session(['_old_input.app_name' => $appForm->app_name]);
-            session(['_old_input.description' => $appForm->description]);
-            session(['_old_input.type' => $appForm->type]);//returns text value, 1 = glitch
-            session(['_old_input.place' => $appForm->place]);
+        if($request->input('action') == 'repopulateForm'){
+            $user = auth()->user();
+            $appForm = AppForm::find($request->id);
+
+            $appFormTypeIndex = DB::scalar(
+                "select type+0 from app_forms where id = ?", [$request->id]
+            );
+
+            if($appForm != null and $appForm->author_id == $user->id){
+                session(['_old_input.app_name' => $appForm->app_name]);
+                session(['_old_input.description' => $appForm->description]);
+                session(['_old_input.type' => $appFormTypeIndex]);
+                session(['_old_input.place' => $appForm->place]);
+            }  
         }
-        
-        return view('my-app-forms.edit');
+
+        return view('my-app-forms.edit', ['appFormId' => $request->id]);
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(AppFormRequest $request): RedirectResponse
     {
+        Log::info($request);
+        $user = auth()->user();
+        $appForm = AppForm::find($request->input('appFormId'));
+
+        if($appForm != null and $appForm->author_id == $user->id){
+            $appForm->app_name = $request->app_name;
+            $appForm->description = $request->description;
+            $appForm->type = $request->type;
+            $request->type == 1 ? $appForm->place = $request->place : $appForm->place = null;
+            $appForm->save();
+
+        }
+
+        //$appForm = AppForm::find();
+
+        //AppForm::where('id', $request->input('appFormId'))->update(['title'=>'Updated title']);
         return Redirect::route('dashboard')->with('status', 'app-form-updated');
     }
 }

@@ -3,11 +3,12 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
-class StoreAppSessionRequest extends FormRequest
+class AppFormRequest extends FormRequest 
 {
     protected $errorBag = 'appform';
-
+  
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -23,7 +24,15 @@ class StoreAppSessionRequest extends FormRequest
      */
     public function rules(): array
     {
-        return ($this->input('action') == 'sendData' ? $this->store() : $this->update()); 
+        switch ($this->input('action')){
+            case 'sendData':
+                return $this->store();
+            case 'updateData':
+                return $this->update();
+            default:
+                return $this->ignore(); 
+        }
+        //return ($this->input('action') == 'sendData' ? $this->store() : $this->ignore()); 
     }
 
     protected function store()
@@ -38,6 +47,10 @@ class StoreAppSessionRequest extends FormRequest
         ];
     }
     protected function update()
+    {
+        return self::store();
+    }
+    protected function ignore()
     {
         return [
             'app_name' => 'nullable',
