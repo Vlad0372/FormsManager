@@ -27,8 +27,6 @@ class MyAppFormsController extends Controller
 
     public function edit(Request $request, string $Id): View
     {        
-        Log::info($Id);
-
         if($request->input('action') == 'repopulateForm'){
             $user = auth()->user();
             $appForm = AppForm::find($request->id);
@@ -45,12 +43,11 @@ class MyAppFormsController extends Controller
             }  
         }
 
-        return view('my-app-forms.edit', ['appFormId' => $request->id]);
+        return view('my-app-forms.edit', ['appFormId' => $Id]);
     }
 
     public function update(AppFormRequest $request): RedirectResponse
     {
-        Log::info($request);
         $user = auth()->user();
         $appForm = AppForm::find($request->input('appFormId'));
 
@@ -60,12 +57,8 @@ class MyAppFormsController extends Controller
             $appForm->type = $request->type;
             $request->type == 1 ? $appForm->place = $request->place : $appForm->place = null;
             $appForm->save();
-
         }
 
-        //$appForm = AppForm::find();
-
-        //AppForm::where('id', $request->input('appFormId'))->update(['title'=>'Updated title']);
         return Redirect::route('dashboard')->with('status', 'app-form-updated');
     }
 }
