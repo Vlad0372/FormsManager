@@ -48,8 +48,14 @@ class MyAppFormsController extends Controller
 
     public function update(AppFormRequest $request): RedirectResponse
     {
+        if($request->input('action') == 'goBack'){
+            return Redirect::route('my-app-forms');
+        }
+
         $user = auth()->user();
         $appForm = AppForm::find($request->input('appFormId'));
+
+        Log::info($request->id);
 
         if($appForm != null and $appForm->author_id == $user->id){
             $appForm->app_name = $request->app_name;
@@ -59,6 +65,20 @@ class MyAppFormsController extends Controller
             $appForm->save();
         }
 
-        return Redirect::route('dashboard')->with('status', 'app-form-updated');
+        return Redirect::route('my-app-forms')->with('status', 'app-form-updated');
+    }
+
+    public function destroy(Request $request): RedirectResponse
+    {
+        $user = auth()->user();
+        $appForm = AppForm::find($request->id);
+
+        if($appForm != null and $appForm->author_id == $user->id){
+           $appForm->delete();
+
+           return Redirect::route('my-app-forms')->with('status', 'app-form-deleted');
+        }
+
+        return Redirect::route('my-app-forms');
     }
 }

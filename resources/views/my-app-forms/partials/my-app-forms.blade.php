@@ -2,6 +2,7 @@
     <div class="max-w-2xl">
         @push('app_forms_scripts')
             <script src="{{ asset('/scripts/app-forms.js') }}"></script>
+            <script src="https://kit.fontawesome.com/cde750a9b3.js" crossorigin="anonymous"></script>
         @endpush
         @push('table_css')
             <link rel="stylesheet" href="{{ asset('/css/table.css') }}">
@@ -27,7 +28,8 @@
                                         <x-tables.th>Type</x-tables.th>
                                         <x-tables.th>Description</x-tables.th>
                                         <x-tables.th>Place</x-tables.th>
-                                        <x-tables.th></x-tables.th>
+                                        <x-tables.th class="w-44"></x-tables.th>
+        
                                     </tr>
                                 </thead>                     
                                 <tbody class="bg-white dark:bg-slate-800">
@@ -37,19 +39,40 @@
                                         <x-tables.td>{{ $appForm->type }}</x-tables.td>
                                         <x-tables.td :wrap="true">{{ $appForm->description }}</x-tables.td>
                                         <x-tables.td :wrap="true">{{ $appForm->place }}</x-tables.td>
-                                        <x-tables.td>
-                                            <form method="post" action="{{ route('my-app-forms.edit', ['id'=>$appForm->id]) }}">
-                                                @csrf
-                                                @method('get')    
-                                                <x-primary-button name="action" value="repopulateForm">
-                                                    {{ __('Edit') }}
-                                                </x-primary-button>
-                                            </form>
-                                        </x-tables.td>                          
+                                        <x-tables.td class="pl-0 pr-0">
+                                            <div class="flex justify-around">
+                                                <form method="post" action="{{ route('my-app-forms.edit', ['id'=>$appForm->id]) }}">
+                                                    @csrf
+                                                    @method('get')    
+                                                    <x-primary-button class="w-11 h-8" name="action" value="repopulateForm">
+                                                        <i class="fa-solid fa-pen-to-square" style="color: #ffffff;"></i>
+                                                    </x-primary-button>
+                                                </form>
+                                                
+                                                <x-danger-button id="{{ $appForm->id }}"
+                                                                x-data=""
+                                                                onclick="setModalHiddenInputId(this.id)"
+                                                                x-on:click.prevent="$dispatch('open-modal', 'confirm-app-form-deletion')"                                     
+                                                                class="w-11 h-8">
+                                                    <i class="fa-solid fa-trash" style="color: #ffffff;"></i>
+                                                </x-danger-button>
+
+                                                <form method="post" action="{{ route('my-app-forms.edit', ['id'=>$appForm->id]) }}">
+                                                    @csrf
+                                                    @method('get')    
+                                                    <x-secondary-button class="w-11 h-8" name="action" value="repopulateForm">
+                                                        <i class="fa-solid fa-print"></i>
+                                                    </x-secondary-button>
+                                                </form> 
+                                            </div>
+                                                           
+                                        </x-tables.td>                                                               
                                     </tr>
                                 @endforeach    
                                 </tbody>
                             </table>
+                            @include('layouts.partials.delete-app-form-form')
+
                         </div>
                     </div>
                     <div class="absolute inset-0 pointer-events-none border border-black/5 rounded-xl dark:border-white/5">

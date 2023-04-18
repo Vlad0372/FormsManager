@@ -20,14 +20,19 @@
             @include('app-form.partials.app-form-body')
            
             <input type="hidden" value="{{ $appFormId }}" name="appFormId">
+
             <x-primary-button name="action" value="updateData">
                 {{ __('Save') }}
-            </x-primary-button>     
+            </x-primary-button> 
+
+            <x-secondary-button type="submit" name="action" value="goBack">
+                {{ __('Cancel') }}
+            </x-secondary-button>    
         </form>
     </div>
     <script type="text/javascript">
         var oldValue = "{{ old('type') }}";
-        
+
         restoreSelectedOption(oldValue);  
     </script>
 </section>

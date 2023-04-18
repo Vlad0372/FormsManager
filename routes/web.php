@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-app-forms', [MyAppFormsController::class, 'index'])->name('my-app-forms');
     Route::get('/my-app-forms/{id}/edit', [MyAppFormsController::class, 'edit'])->name('my-app-forms.edit');
     Route::patch('/my-app-forms', [MyAppFormsController::class, 'update'])->name('my-app-forms.update');
+    Route::delete('/my-app-forms', [MyAppFormsController::class, 'destroy'])->name('my-app-forms.destroy');
 });
 
 

@@ -67,3 +67,7 @@ function restoreSelectedOption(oldValue){
         selectedItem.value = 3;  
     } 
 }
+
+function setModalHiddenInputId(id){
+    document.getElementById('deleteAppFormHiddentInputId').value = id;
+}

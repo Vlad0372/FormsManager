@@ -74,6 +74,7 @@
             @include('layouts.partials.session-is-occupied')
             @include('layouts.partials.session-is-terminated')
             @include('layouts.partials.app-form-updated')
+            @include('layouts.partials.app-form-deleted')
             
         </div>
     </div>
