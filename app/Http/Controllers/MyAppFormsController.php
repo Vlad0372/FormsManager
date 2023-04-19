@@ -24,7 +24,7 @@ class MyAppFormsController extends Controller
 {
     public function index(): View
     {
-        return view('my-app-forms.index', ['myAppForms' => AppForm::all()->where('author_id','=',auth()->user()->id)]);
+        return view('my-app-forms.index', ['myAppForms' => AppForm::all()->where('author_id','=',auth()->user()->id)->reverse()]);
     }
 
     public function edit(Request $request, string $Id): View
