@@ -17,6 +17,8 @@ use App\Jobs\TerminateAppFormSessionJob;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
+use Dompdf\Dompdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class MyAppFormsController extends Controller
 {
@@ -26,7 +28,7 @@ class MyAppFormsController extends Controller
     }
 
     public function edit(Request $request, string $Id): View
-    {        
+    {
         if($request->input('action') == 'repopulateForm'){
             $user = auth()->user();
             $appForm = AppForm::find($request->id);
@@ -40,7 +42,7 @@ class MyAppFormsController extends Controller
                 session(['_old_input.description' => $appForm->description]);
                 session(['_old_input.type' => $appFormTypeIndex]);
                 session(['_old_input.place' => $appForm->place]);
-            }  
+            }
         }
 
         return view('my-app-forms.edit', ['appFormId' => $Id]);
@@ -80,5 +82,22 @@ class MyAppFormsController extends Controller
         }
 
         return Redirect::route('my-app-forms');
+    }
+
+    public function pdfStream(Request $request)
+    {
+        $user = auth()->user();
+        $appForm = AppForm::find($request->input('appFormId'));
+       
+        $appForm->created_at_f = Carbon::parse($appForm->created_at)->format('d.m.Y');
+        $appForm->printed_at_f = Carbon::parse(Carbon::now())->format('d.m.Y');
+
+        if($appForm != null and $appForm->author_id == $user->id){
+            $appForm = $appForm->toArray();
+              
+            $pdf = PDF::loadView('my-app-forms.partials.pdf-template', compact('appForm'));
+           
+            return $pdf->stream('application_form.pdf');
+        }
     }
 }

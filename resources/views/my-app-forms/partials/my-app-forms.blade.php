@@ -28,7 +28,7 @@
                                         <x-tables.th>Type</x-tables.th>
                                         <x-tables.th>Description</x-tables.th>
                                         <x-tables.th>Place</x-tables.th>
-                                        <x-tables.th class="w-44"></x-tables.th>
+                                        <x-tables.th class="w-48"></x-tables.th>
         
                                     </tr>
                                 </thead>                     
@@ -53,14 +53,14 @@
                                                                 x-data=""
                                                                 onclick="setModalHiddenInputId(this.id)"
                                                                 x-on:click.prevent="$dispatch('open-modal', 'confirm-app-form-deletion')"                                     
-                                                                class="w-11 h-8">
+                                                                class="w-11 h-8 -mx-4">
                                                     <i class="fa-solid fa-trash" style="color: #ffffff;"></i>
                                                 </x-danger-button>
 
-                                                <form method="post" action="{{ route('my-app-forms.edit', ['id'=>$appForm->id]) }}">
+                                                <form method="post" action="{{ route('my-app-forms.pdfStream') }}" target="_blank">
                                                     @csrf
                                                     @method('get')    
-                                                    <x-secondary-button class="w-11 h-8" name="action" value="repopulateForm">
+                                                    <x-secondary-button class="w-11 h-8" type="submit" name="appFormId" value="{{ $appForm->id }}">
                                                         <i class="fa-solid fa-print"></i>
                                                     </x-secondary-button>
                                                 </form> 
