@@ -3,7 +3,7 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>Invoice Example</title>
+        <title>Application form</title>
         <link rel="stylesheet" type="text/css" href="{{ ltrim(base_path('public/css/pdf-template.css'), '/') }}" />
     </head>
     <body>
@@ -21,7 +21,7 @@
                                 <td class="secondinfo">
                                     Politechnika Opolska<br />
                                     Praktykant Vladyslav<br />
-                                    vladek@example.com
+                                    praktykant.vladek@gmail.com
                                 </td>
                             </tr>
                         </table>
