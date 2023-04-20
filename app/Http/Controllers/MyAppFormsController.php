@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\URL;
 use Dompdf\Dompdf;
 use Barryvdh\DomPDF\Facade\Pdf;
 
+require '../vendor/autoload.php';
+
 class MyAppFormsController extends Controller
 {
     public function index(): View
@@ -91,7 +93,7 @@ class MyAppFormsController extends Controller
        
         $appForm->created_at_f = Carbon::parse($appForm->created_at)->format('d.m.Y');
         $appForm->printed_at_f = Carbon::parse(Carbon::now())->format('d.m.Y');
-
+        
         if($appForm != null and $appForm->author_id == $user->id){
             $appForm = $appForm->toArray();
               

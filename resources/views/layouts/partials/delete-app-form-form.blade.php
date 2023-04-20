@@ -10,7 +10,7 @@
             </h2>
 
             <p class="mt-1 text-sm text-gray-600">
-                {{ __('Once your application is deleted, all of its resources and data will be permanently deleted.') }}
+                {{ __('Once your application is deleted, all of its data will be permanently deleted.') }}
             </p>
 
             <div class="mt-6 flex justify-end">
