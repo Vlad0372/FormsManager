@@ -46,6 +46,14 @@
                             {{ __('My applications') }}
                         </x-dropdown-link>
 
+                        <x-dropdown-link :href="route('app-form-settings.edit')">
+                            {{ __('Settings') }}
+                        </x-dropdown-link>
+
+                        <x-dropdown-link :href="route('bip-parser')">
+                            {{ __('Parser') }}
+                        </x-dropdown-link>
+
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -107,6 +115,14 @@
                     {{ __('My applications') }}
                 </x-responsive-nav-link>
 
+                <x-responsive-nav-link :href="route('app-form-settings.edit')">
+                    {{ __('Settings') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('bip-parser')">
+                    {{ __('Parser') }}
+                </x-responsive-nav-link>
+                
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

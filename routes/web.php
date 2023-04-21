@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MyAppFormsController;
 use App\Http\Controllers\AppFormController;
+use App\Http\Controllers\AppFormSettingsController;
+use App\Http\Controllers\BipParserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,5 +47,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-app-forms/pdf', [MyAppFormsController::class, 'pdfStream'])->name('my-app-forms.pdfStream');
 });
 
+Route::middleware('auth')->group(function () {
+    Route::get('/app-form-settings', [AppFormSettingsController::class, 'edit'])->name('app-form-settings.edit');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/bip-parser', [BipParserController::class, 'index'])->name('bip-parser');
+    Route::get('/bip-parser/results', [BipParserController::class, 'parse'])->name('bip-parser.parse');
+});
 
 require __DIR__.'/auth.php';
