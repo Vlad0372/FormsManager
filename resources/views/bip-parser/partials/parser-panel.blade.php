@@ -13,8 +13,12 @@
         @csrf
         @method('get')
 
-        <x-primary-button>
+        <x-primary-button name="action" value="defaultParse">
             {{ __('Parse') }}
+        </x-primary-button>
+
+        <x-primary-button name="action" value="dirtyParse">
+            {{ __('Dirty parse') }}
         </x-primary-button>
     </form>
 

@@ -5,9 +5,9 @@
         </h2>
     </header>
 
-    @if (session('status') === 'showLinks')
+    @if(isset($status) && $status === 'showLinks')
         <h2 class="text-lg font-medium text-green-500">
-            {{ __('Success') }}
+            {{ __('Success! Founds:') }} {{count($links)}}
         </h2>
 
         @if (count($links) > 0)
@@ -15,10 +15,11 @@
                 <p>{{ $link }}</p>                                     
             @endforeach
         @endif     
-    @else
+    @else 
         <h2 class="text-lg font-medium text-red-500">
             {{ __('No results found') }}
         </h2>
     @endif
+
 
 </section>
