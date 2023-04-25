@@ -12,7 +12,7 @@
 
         @if (count($links) > 0)
             @foreach($links as $link)                        
-                <p>{{ $link }}</p>                                     
+                <p><a class="underline text-sky-500" target="_blank" href="{{ $link }}">{{ $link }}</a></p>                                     
             @endforeach
         @endif     
     @else 
