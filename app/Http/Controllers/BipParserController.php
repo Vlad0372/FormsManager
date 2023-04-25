@@ -12,9 +12,10 @@ use Illuminate\Support\Facades\Session;
 
 class BipParserController extends Controller
 {
-    private const REWRITE_TXT = true;
-    //private const SEARCH_ENGINE = 'google';
-    private const SEARCH_ENGINE = 'bing';
+    //private const REWRITE_TXT = true;
+    private const REWRITE_TXT = false;
+    private const SEARCH_ENGINE = 'google';
+    //private const SEARCH_ENGINE = 'bing';
     public function index(Request $request): View
     {
         return view('bip-parser.index');
@@ -45,24 +46,27 @@ class BipParserController extends Controller
     public function parse(Request $request): View
     {
         if(self::REWRITE_TXT){
-
-            $links = self::scrapeLinks()['links'];
-
-            $txtFile = fopen("txt_files/scrapedLinks.txt", "w") or die("Unable to open file!");
-
-            foreach($links as $link){
-                fwrite($txtFile, $link . "\n");
-            }
-
+            $txtFile = fopen("txt_files/jsonTestNew2.txt", "w") or die("Unable to open file!");
+            $jsonArray = self::scrapeLinks();
+            
+            fwrite($txtFile, json_encode($jsonArray));
             fclose($txtFile);
-        }else{
-            $array = explode("\n", file_get_contents("txt_files/scrapedLinks.txt"));
-            array_pop($array);
+            //Log::info($bruh);
+            //$jsonArray = self::scrapeLinks();
 
-            //Log::info($array);
+            //$txtFile = fopen("txt_files/scrapedLinks.txt", "w") or die("Unable to open file!");
+
+            // foreach($links as $link){
+            //     fwrite($txtFile, $link . "\n");
+            // }
+
+            // fclose($txtFile);
+        }else{
+            $jsonArray = json_decode(file_get_contents("txt_files/links_json.txt"), true);
         }
 
-
+        return view('bip-parser.index')->with('status', 'showLinks')
+                                       ->with('links', $jsonArray['links']);
 
         // if($request->input('action') == 'dirtyParse'){
         //     return view('bip-parser.index')->with('status', 'showLinks')
@@ -75,7 +79,7 @@ class BipParserController extends Controller
         // $trimedLink =  'https://www.bip.ires.pl/czg&sa=U&ved=2ahUKEwif-t6Ns8P-AhVuzDgGHZVWCgoQFnoECAkQAg&usg=AOvVaw1jykwl8Wtue9RnYVV4SxIj';
         // $govno = explode('&', $trimedLink);
         // Log::info($govno);
-         return view('bip-parser.index');
+         //return view('bip-parser.index');
     }
 
     function scrapeLinks(){
@@ -93,7 +97,7 @@ class BipParserController extends Controller
         for (; $i < $pagesNumber * 10; $i+=10) {
             $url = $urlBase . $i;
             $page = file_get_contents($url, false);
-
+            //Log::info($url);
             //Log::info($page);
             $doc = new DOMDocument();
             libxml_use_internal_errors(true);
@@ -129,9 +133,9 @@ class BipParserController extends Controller
                                 $trimedLink = strval(explode('&', $trimedLink)[0]);
                             }
 
-                            if(!is_numeric($trimedLink)){
+                            if(!is_numeric($trimedLink) && !strlen($trimedLink) == 0){                             
                                 $subdomainNames[] =  $trimedLink;
-                                $links[] = $domainName . $trimedLink;
+                                $links[] = $domainName . $trimedLink;                             
                             }
                         }
                     }
@@ -147,8 +151,6 @@ class BipParserController extends Controller
                 'fullLinks' => $fullLinks,
             );
         }
-
-
 
         Log::info($arrayGroup);
 
