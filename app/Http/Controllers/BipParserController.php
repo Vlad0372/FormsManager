@@ -21,65 +21,31 @@ class BipParserController extends Controller
         return view('bip-parser.index');
     }
 
-    public function parse1(Request $request): View
-    {
-
-        $url = "/url?q=https://www.bip.ires.pl/sedziszow_mlp/drukuj_6426__127064__/&sa=U&ved=2ahUKEwj8nqrdqsP-AhWI7jgGHXnGDMg4ChAWegQICRAC&usg=AOvVaw1S8-ooaRWw_I7vO0z8X-4s";
-        //$parts = parse_url($url);
-        //Log::info($parts);
-
-        $whatINeed = explode('/', $url);
-        $whatINeed = $whatINeed[4];
-
-        Log::info($whatINeed);
-
-        $myfile = fopen("txt_files/scrapedLinks.txt", "w") or die("Unable to open file!");
-        $txt = "John Doe\n";
-        fwrite($myfile, $txt);
-        $txt = "Jane Doe\n";
-        fwrite($myfile, $txt);
-        fclose($myfile);
-
-        return view('bip-parser.index');
-
-    }
     public function parse(Request $request): View
     {
         if(self::REWRITE_TXT){
-            $txtFile = fopen("txt_files/jsonTestNew2.txt", "w") or die("Unable to open file!");
+            $txtFile = fopen("txt_files/links_json.txt", "w") or die("Unable to open file!");
             $jsonArray = self::scrapeLinks();
-            
+
             fwrite($txtFile, json_encode($jsonArray));
             fclose($txtFile);
-            //Log::info($bruh);
-            //$jsonArray = self::scrapeLinks();
 
-            //$txtFile = fopen("txt_files/scrapedLinks.txt", "w") or die("Unable to open file!");
+            $txtFile = fopen("txt_files/page_htmls_json.txt", "w") or die("Unable to open file!");
+            $jsonArray = self::getPagesHTML($jsonArray['links']);
 
-            // foreach($links as $link){
-            //     fwrite($txtFile, $link . "\n");
-            // }
+            fwrite($txtFile, json_encode($jsonArray));
+            fclose($txtFile);
 
-            // fclose($txtFile);
+            return view('bip-parser.index');
         }else{
             $jsonArray = json_decode(file_get_contents("txt_files/links_json.txt"), true);
+            $jsonPagesArray = json_decode(file_get_contents("txt_files/page_htmls_json.txt"), true);
+
+            $jsonArray['pageEmails'] = self::parsePages($jsonPagesArray);
         }
 
         return view('bip-parser.index')->with('status', 'showLinks')
-                                       ->with('links', $jsonArray['links']);
-
-        // if($request->input('action') == 'dirtyParse'){
-        //     return view('bip-parser.index')->with('status', 'showLinks')
-        //                                     ->with('links', $fullLinks);
-        // }else{
-        //     return view('bip-parser.index')->with('status', 'showLinks')
-        //                                     ->with('links', $links);
-        // }
-
-        // $trimedLink =  'https://www.bip.ires.pl/czg&sa=U&ved=2ahUKEwif-t6Ns8P-AhVuzDgGHZVWCgoQFnoECAkQAg&usg=AOvVaw1jykwl8Wtue9RnYVV4SxIj';
-        // $govno = explode('&', $trimedLink);
-        // Log::info($govno);
-         //return view('bip-parser.index');
+                                        ->with('data', $jsonArray);
     }
 
     function scrapeLinks(){
@@ -97,18 +63,16 @@ class BipParserController extends Controller
         for (; $i < $pagesNumber * 10; $i+=10) {
             $url = $urlBase . $i;
             $page = file_get_contents($url, false);
-            //Log::info($url);
-            //Log::info($page);
+
             $doc = new DOMDocument();
             libxml_use_internal_errors(true);
             $doc->loadHTML($page);
             libxml_use_internal_errors(false);
-            //Log::info($page);
 
             if(self::SEARCH_ENGINE == 'bing'){
                 foreach ($doc->getElementsByTagName('cite') as $element) {
                     $link = $element->textContent;
-                    $fullLinks[] =  $link;
+                    $allLinks[] =  $link;
 
                     if (str_contains($link, $domainName)) {
                         $trimedLink = strval(explode('/', $link)[3]);
@@ -124,7 +88,7 @@ class BipParserController extends Controller
                     if ($element->hasAttribute('href')) {
                         $link = $element->getAttribute('href');
 
-                        $fullLinks[] =  $link;
+                        $allLinks[] =  $link;
 
                         if (str_contains($link, $domainName)) {
                             $trimedLink = strval(explode('/', $link)[4]);
@@ -133,28 +97,58 @@ class BipParserController extends Controller
                                 $trimedLink = strval(explode('&', $trimedLink)[0]);
                             }
 
-                            if(!is_numeric($trimedLink) && !strlen($trimedLink) == 0){                             
+                            if(!is_numeric($trimedLink) && !strlen($trimedLink) == 0){
                                 $subdomainNames[] =  $trimedLink;
-                                $links[] = $domainName . $trimedLink;                             
+                                $links[] = $domainName . $trimedLink;
                             }
                         }
                     }
-                }        
+                }
             }
-
-            $subdomainNames = array_unique($subdomainNames);
-            $links = array_unique($links);
-
-            $arrayGroup = array(
-                'subdomainNames' => $subdomainNames,
-                'links' => $links,
-                'fullLinks' => $fullLinks,
-            );
         }
 
-        Log::info($arrayGroup);
+        $subdomainNames = array_values(array_unique($subdomainNames));
+        $links = array_values(array_unique($links));
+
+        $arrayGroup = array(
+            'subdomainNames' => $subdomainNames,
+            'links' => $links,
+            'allLinks' => $allLinks,
+        );
 
         return $arrayGroup;
-        //Log::info($links);
+    }
+
+    function getPagesHTML($urls){
+        $pageHTMLs = [];
+
+        foreach($urls as $url){
+            $page = file_get_contents($url, false);
+
+            $doc = new DOMDocument();
+            libxml_use_internal_errors(true);
+            $doc->loadHTML($page);
+            libxml_use_internal_errors(false);
+
+            $pageHTMLs[] = $page;
+        }
+
+        return $pageHTMLs;
+    }
+
+    function parsePages($pages){
+        $allEmails = [];
+
+        foreach($pages as $page){
+            preg_match_all("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $page, $matches);
+
+            if(count($matches[0]) != 0){
+                $matches[0] = array_unique($matches[0]);
+            }
+
+            $allEmails[] = $matches[0];
+        }
+       
+        return $allEmails;
     }
 }
