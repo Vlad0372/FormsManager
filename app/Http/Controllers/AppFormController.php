@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AppFormRequest;
 use App\Http\Controllers\DateTimeZone;
 use App\Models\AppForm;
+use App\Models\AppType;
 use App\Models\AppFormSession;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\RedirectResponse;
@@ -70,7 +71,10 @@ class AppFormController extends Controller
     }
     public function edit(): View
     {
-        return view("app-form.edit");
+        Log::info('bruh');
+        
+
+        return view("app-form.edit", ['allAppTypes' => AppType::all()]);
     }
     public function create(): RedirectResponse
     {

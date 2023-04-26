@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if(!Schema::hasTable('app_forms')){
         Schema::create('app_forms', function (Blueprint $table) {
             $table->id();
             $table->string('app_name');
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->text('place')->nullable();
             $table->timestamps();
         });
+    }
     }
 
     /**

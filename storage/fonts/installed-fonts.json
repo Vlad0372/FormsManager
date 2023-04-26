@@ -12,14 +12,14 @@
         "bold": "droid_serif_bold_3d222bffcff3272785c618cd2611da9a"
     },
     "crimson pro": {
-        "normal": "C:\\Users\\Vladislav\\Desktop\\Practice\\chirper_v2\\storage\\fonts\/crimson_pro_normal_a4c56839eabbe063f94fdddf2be825dd",
-        "200": "C:\\Users\\Vladislav\\Desktop\\Practice\\chirper_v2\\storage\\fonts\/crimson_pro_200_f7382eb83aebec5d1c9bcfc76b0b6431",
-        "300": "C:\\Users\\Vladislav\\Desktop\\Practice\\chirper_v2\\storage\\fonts\/crimson_pro_300_eaf81f2fcb59fc13bc6db82570ec326b",
-        "500": "C:\\Users\\Vladislav\\Desktop\\Practice\\chirper_v2\\storage\\fonts\/crimson_pro_500_bcfbb45a5d3a46efac1678fe80573af0",
-        "600": "C:\\Users\\Vladislav\\Desktop\\Practice\\chirper_v2\\storage\\fonts\/crimson_pro_600_ea623e922f14955711e8821097e10a0f",
-        "bold": "C:\\Users\\Vladislav\\Desktop\\Practice\\chirper_v2\\storage\\fonts\/crimson_pro_bold_e874e56c0607a360f5821c5008ba2d5c",
-        "800": "crimson_pro_800_6e00f420a7a61fd7270091e9a33ba128",
-        "900": "C:\\Users\\Vladislav\\Desktop\\Practice\\chirper_v2\\storage\\fonts\/crimson_pro_900_a2bc2aa1acd249874a955eb4a6a68ca1"
+        "normal": "C:\\Users\\Praktykant\\Desktop\\projects\\chirper_v2\\storage\\fonts\/crimson_pro_normal_a4c56839eabbe063f94fdddf2be825dd",
+        "200": "C:\\Users\\Praktykant\\Desktop\\projects\\chirper_v2\\storage\\fonts\/crimson_pro_200_f7382eb83aebec5d1c9bcfc76b0b6431",
+        "300": "C:\\Users\\Praktykant\\Desktop\\projects\\chirper_v2\\storage\\fonts\/crimson_pro_300_eaf81f2fcb59fc13bc6db82570ec326b",
+        "500": "C:\\Users\\Praktykant\\Desktop\\projects\\chirper_v2\\storage\\fonts\/crimson_pro_500_bcfbb45a5d3a46efac1678fe80573af0",
+        "600": "C:\\Users\\Praktykant\\Desktop\\projects\\chirper_v2\\storage\\fonts\/crimson_pro_600_ea623e922f14955711e8821097e10a0f",
+        "bold": "C:\\Users\\Praktykant\\Desktop\\projects\\chirper_v2\\storage\\fonts\/crimson_pro_bold_e874e56c0607a360f5821c5008ba2d5c",
+        "800": "C:\\Users\\Praktykant\\Desktop\\projects\\chirper_v2\\storage\\fonts\/crimson_pro_800_6e00f420a7a61fd7270091e9a33ba128",
+        "900": "crimson_pro_900_a2bc2aa1acd249874a955eb4a6a68ca1"
     },
     "literata": {
         "normal": "literata_normal_ef2c34be6c89f3db4a33af77aaa4c642"
@@ -28,13 +28,13 @@
         "normal": "roboto_normal_7bc701b343c10631f60048716b96e4f7"
     },
     "nunito": {
-        "normal": "C:\\Users\\Vladislav\\Desktop\\Practice\\chirper_v2\\storage\\fonts\/nunito_normal_f8ce9593f0c56e52776379aa29b2d690",
-        "300": "C:\\Users\\Vladislav\\Desktop\\Practice\\chirper_v2\\storage\\fonts\/nunito_300_e28db753c8a675c61d9890acca19ec15",
-        "600": "C:\\Users\\Vladislav\\Desktop\\Practice\\chirper_v2\\storage\\fonts\/nunito_600_0275befc5ca0fc822c590fc63a6c14d5",
-        "900": "nunito_900_0c10c61fdd120a227c298ecaf88fce9a",
-        "bold": "C:\\Users\\Vladislav\\Desktop\\Practice\\chirper_v2\\storage\\fonts\/nunito_bold_8dc3583b65bede23262ac4c563179f23",
-        "800": "C:\\Users\\Vladislav\\Desktop\\Practice\\chirper_v2\\storage\\fonts\/nunito_800_924d67a3f4e0c85d5e5695ded0fa98ec",
-        "200": "C:\\Users\\Vladislav\\Desktop\\Practice\\chirper_v2\\storage\\fonts\/nunito_200_f633e1a77f06e18e7a939ae5594d142d",
-        "500": "C:\\Users\\Vladislav\\Desktop\\Practice\\chirper_v2\\storage\\fonts\/nunito_500_451723395e3197d7dde5899edd37d91e"
+        "normal": "C:\\Users\\Praktykant\\Desktop\\projects\\chirper_v2\\storage\\fonts\/nunito_normal_f8ce9593f0c56e52776379aa29b2d690",
+        "300": "C:\\Users\\Praktykant\\Desktop\\projects\\chirper_v2\\storage\\fonts\/nunito_300_e28db753c8a675c61d9890acca19ec15",
+        "600": "C:\\Users\\Praktykant\\Desktop\\projects\\chirper_v2\\storage\\fonts\/nunito_600_0275befc5ca0fc822c590fc63a6c14d5",
+        "900": "C:\\Users\\Praktykant\\Desktop\\projects\\chirper_v2\\storage\\fonts\/nunito_900_0c10c61fdd120a227c298ecaf88fce9a",
+        "bold": "C:\\Users\\Praktykant\\Desktop\\projects\\chirper_v2\\storage\\fonts\/nunito_bold_8dc3583b65bede23262ac4c563179f23",
+        "800": "nunito_800_924d67a3f4e0c85d5e5695ded0fa98ec",
+        "200": "C:\\Users\\Praktykant\\Desktop\\projects\\chirper_v2\\storage\\fonts\/nunito_200_f633e1a77f06e18e7a939ae5594d142d",
+        "500": "C:\\Users\\Praktykant\\Desktop\\projects\\chirper_v2\\storage\\fonts\/nunito_500_451723395e3197d7dde5899edd37d91e"
     }
 }

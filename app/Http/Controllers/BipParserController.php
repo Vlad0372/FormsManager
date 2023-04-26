@@ -110,6 +110,8 @@ class BipParserController extends Controller
         $subdomainNames = array_values(array_unique($subdomainNames));
         $links = array_values(array_unique($links));
 
+        Log::info($links);
+
         $arrayGroup = array(
             'subdomainNames' => $subdomainNames,
             'links' => $links,
