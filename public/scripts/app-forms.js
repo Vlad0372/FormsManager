@@ -1,15 +1,23 @@
 function showHideTextarea(){
     var selectedItem = document.getElementById("type").value;
+    var hasDesc = document.getElementById("type").getAttribute("data-hasdescription");
 
-    console.log(selectedItem);
-    //if(selectedItem.id)
-    // if(selectedItem == "1"){
-    //     var txtarea = document.getElementById("placeTxtAreaDiv");
-    //     txtarea.style.display = "block";
-    // }else{
-    //     var txtarea = document.getElementById("placeTxtAreaDiv");
-    //     txtarea.style.display = "none";
-    // }
+    //console.log(selectedItem);
+    //console.log(hasDesc);
+
+    var e = document.getElementById("type");
+    var value = e.value;
+    var hasDesc = e.options[e.selectedIndex].getAttribute("data-hasdescription");
+
+    //console.log(value);
+
+    if(hasDesc == 1){
+        var txtarea = document.getElementById("placeTxtAreaDiv");
+        txtarea.style.display = "block";
+    }else{
+        var txtarea = document.getElementById("placeTxtAreaDiv");
+        txtarea.style.display = "none";
+    }
 
     // var selectedItem = document.getElementById("type").value;
     // if(selectedItem == "1"){
