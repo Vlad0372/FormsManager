@@ -50,6 +50,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/app-form-settings', [AppFormSettingsController::class, 'index'])->name('app-form-settings');
     Route::get('/app-form-settings/{id}/edit', [AppFormSettingsController::class, 'edit'])->name('app-form-settings.edit');
+    Route::patch('/app-form-settings', [AppFormSettingsController::class, 'update'])->name('app-form-type.update');
+    Route::delete('/app-form-settings', [AppFormSettingsController::class, 'destroy'])->name('app-form-type.destroy');
+    Route::post('/app-form-settings', [AppFormSettingsController::class, 'store'])->name('app-form-type.store');
 });
 
 Route::middleware('auth')->group(function () {

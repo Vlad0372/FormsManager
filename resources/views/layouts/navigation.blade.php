@@ -83,7 +83,10 @@
             @include('layouts.partials.session-is-terminated')
             @include('layouts.partials.app-form-updated')
             @include('layouts.partials.app-form-deleted')
-            
+
+            @include('layouts.partials.app-form-type-created')
+            @include('layouts.partials.app-form-type-updated')
+            @include('layouts.partials.app-form-type-deleted')
         </div>
     </div>
 

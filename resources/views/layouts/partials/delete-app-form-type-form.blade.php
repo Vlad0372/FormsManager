@@ -1,5 +1,5 @@
 <x-modal name="confirm-app-form-type-deletion" focusable>
-        <form method="post" action="{{ route('my-app-forms.destroy')}}" class="p-6">
+        <form method="post" action="{{ route('app-form-type.destroy')}}" class="p-6">
             @csrf
             @method('delete')
 
