@@ -15,6 +15,17 @@ function showHideTextarea(){
     }
 }
 
+function restoreSelectedOption(oldValue){
+    if(oldValue){
+        var selectedItem = document.getElementById("type");
+        selectedItem.value = oldValue;
+        showHideTextarea();
+    }else{
+        var selectedItem = document.getElementById("type");
+        selectedItem.value = -1;  
+    } 
+}
+
 function saveScrollPos(){
     scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
     localStorage.setItem("formScrollPos", scrollPos);
@@ -61,17 +72,6 @@ function startTimer(elemId, passedSecs){
             }          
         }     
     }
-}
-
-function restoreSelectedOption(oldValue){
-    if(oldValue){
-        var selectedItem = document.getElementById("type");
-        selectedItem.value = oldValue;
-        showHideTextarea();
-    }else{
-        var selectedItem = document.getElementById("type");
-        selectedItem.value = -1;  
-    } 
 }
 
 function setModalHiddenInputId(id, modalId){

@@ -2,28 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AppFormTypeRequest;
-use App\Http\Controllers\DateTimeZone;
-use App\Models\AppForm;
 use App\Models\AppType;
-use App\Models\AppFormSession;
-use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\DB;
-use App\Jobs\TerminateAppFormSessionJob;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\URL;
-use Dompdf\Dompdf;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class AppFormSettingsController extends Controller
 {
-    
     public function index(Request $request): View
     {
         session(['_old_input.app_type_name' => ""]);
@@ -31,11 +17,10 @@ class AppFormSettingsController extends Controller
 
         return view('app-form-settings.index', ['appFormTypes' => AppType::all()->reverse()]);
     }
-
     public function store(Request $request): RedirectResponse
     {
         $request->validateWithBag('appformtype', [
-            'app_type_name' => 'required|string|min:3|max:30',
+            'app_type_name' => 'required|unique:app_types,type|string|min:3|max:30',
         ]);
 
         $newAppFormType = new AppType;
@@ -70,10 +55,9 @@ class AppFormSettingsController extends Controller
         if($request->input('action') == 'goBack'){
             return Redirect::route('app-form-settings', ['appFormTypes' => AppType::all()->reverse()]);
         }
-        Log::info($request);
 
         $request->validateWithBag('appformtype', [
-            'app_type_name' => 'required|string|min:3|max:30',
+            'app_type_name' => 'required|unique:app_types,type|string|min:3|max:30',
         ]);
 
         $appFormType = AppType::find($request->input('appFormTypeId'));
@@ -92,7 +76,6 @@ class AppFormSettingsController extends Controller
 
         return Redirect::route('app-form-settings')->with('status', 'app-form-type-updated');
     }
-
     public function destroy(Request $request): RedirectResponse
     {
         $appFormType = AppType::find($request->input('id'));

@@ -25,8 +25,6 @@
     <x-input-error :messages="$errors->appform->first('type')" class="mt-2" /> 
 </div>
 
-
-
 <div style="display: none;" class="" id="placeTxtAreaDiv">
     <x-input-label for="place" :value="__('Place')" />
     <textarea name="place" type="text" maxlength="50" placeholder="Describe the place where it happened"  class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full mt-1 -mb-1">{{ old('place') }}</textarea>

@@ -40,7 +40,7 @@
     <script type="text/javascript">
         var oldValue = "{{ old('type') }}";
         var seconds = "{{ session('sessionSeconds') }}";
-        console.log(oldValue);
+  
         restoreSelectedOption(oldValue);
         startTimer("sessionTimer", seconds);   
     </script>

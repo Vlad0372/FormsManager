@@ -30,9 +30,9 @@
             </x-secondary-button>    
         </form>
     </div>
+
     <script type="text/javascript">
         var oldValue = "{{ old('type') }}";
-
         restoreSelectedOption(oldValue);  
     </script>
 </section>

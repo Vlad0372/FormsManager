@@ -23,57 +23,9 @@ class AppFormController extends Controller
 {
     private $sessionSeconds = 1120;
 
-    public function GetAppFormSessionSecondsLeft(){
-        $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
-
-        if($lastAppFormSession != null){
-            $currentTime = Carbon::now();
-            $appForm_expires_at = new Carbon($lastAppFormSession->expires_at);
-            $secondsLeft = $currentTime->diffInSeconds($appForm_expires_at, false);
-
-            return $secondsLeft;
-        }   
-
-        return null;
-    }
-    public function OccupyAppFormSession($seconds)
-    {
-        $user = auth()->user();
-        $currentTime = Carbon::now();
-
-        $newAppFormSession = new AppFormSession;    
-        $newAppFormSession->user_id = $user->id;
-        $newAppFormSession->user_name = $user->name;
-        $newAppFormSession->is_alive = true;
-        $newAppFormSession->expires_at = $currentTime->addSeconds($seconds);
-        $newAppFormSession->save();
-        
-        session(['sessionSeconds' => $seconds]);
-    }
-    private function ExtendAppFormSession($seconds)
-    {
-        $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
-        $user = auth()->user();
-
-        if($lastAppFormSession->user_id == $user->id){
-            DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['is_alive' => "1"]);
-            DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['expires_at' => Carbon::now()->addSeconds($seconds)]);      
-        }
-    }
-    private function TerminateAppFormSession()
-    {
-        $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
-        $user = auth()->user();
-
-        if($lastAppFormSession->user_id == $user->id){
-            DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['is_alive' => "0"]);   
-        }
-    }
+    
     public function edit(): View
     {
-        //Log::info('bruh');
-        
-
         return view("app-form.edit", ['allAppTypes' => AppType::all()]);
     }
     public function create(): RedirectResponse
@@ -161,5 +113,51 @@ class AppFormController extends Controller
         self::TerminateAppFormSession();
         
         return Redirect::route('dashboard')->with('status', 'session-terminated');
+    }
+    public function GetAppFormSessionSecondsLeft(){
+        $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
+
+        if($lastAppFormSession != null){
+            $currentTime = Carbon::now();
+            $appForm_expires_at = new Carbon($lastAppFormSession->expires_at);
+            $secondsLeft = $currentTime->diffInSeconds($appForm_expires_at, false);
+
+            return $secondsLeft;
+        }   
+
+        return null;
+    }
+    public function OccupyAppFormSession($seconds)
+    {
+        $user = auth()->user();
+        $currentTime = Carbon::now();
+
+        $newAppFormSession = new AppFormSession;    
+        $newAppFormSession->user_id = $user->id;
+        $newAppFormSession->user_name = $user->name;
+        $newAppFormSession->is_alive = true;
+        $newAppFormSession->expires_at = $currentTime->addSeconds($seconds);
+        $newAppFormSession->save();
+        
+        session(['sessionSeconds' => $seconds]);
+    }
+    private function ExtendAppFormSession($seconds)
+    {
+        $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
+        $user = auth()->user();
+
+        if($lastAppFormSession->user_id == $user->id){
+            DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['is_alive' => "1"]);
+            DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['expires_at' => Carbon::now()->addSeconds($seconds)]);      
+        }
+    }
+    private function TerminateAppFormSession()
+    {
+        $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
+        $user = auth()->user();
+
+        if($lastAppFormSession->user_id == $user->id){
+            DB::table('app_form_sessions')->where('id', $lastAppFormSession->id)->update(['is_alive' => "0"]);   
+        }
     }
 }

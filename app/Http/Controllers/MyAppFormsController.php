@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AppFormRequest;
 use App\Http\Controllers\DateTimeZone;
 use App\Models\AppForm;
+use App\Models\AppType;
 use App\Models\AppFormSession;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\RedirectResponse;
@@ -35,19 +36,15 @@ class MyAppFormsController extends Controller
             $user = auth()->user();
             $appForm = AppForm::find($request->id);
 
-            $appFormTypeIndex = DB::scalar(
-                "select type+0 from app_forms where id = ?", [$request->id]
-            );
-
             if($appForm != null and $appForm->author_id == $user->id){
                 session(['_old_input.app_name' => $appForm->app_name]);
                 session(['_old_input.description' => $appForm->description]);
-                session(['_old_input.type' => $appFormTypeIndex]);
+                session(['_old_input.type' => $appForm->type]);
                 session(['_old_input.place' => $appForm->place]);
             }
         }
 
-        return view('my-app-forms.edit', ['appFormId' => $Id]);
+        return view('my-app-forms.edit', ['appFormId' => $Id ,'allAppTypes' => AppType::all()]);
     }
 
     public function update(AppFormRequest $request): RedirectResponse
@@ -59,13 +56,18 @@ class MyAppFormsController extends Controller
         $user = auth()->user();
         $appForm = AppForm::find($request->input('appFormId'));
 
-        Log::info($request->id);
-
         if($appForm != null and $appForm->author_id == $user->id){
             $appForm->app_name = $request->app_name;
             $appForm->description = $request->description;
             $appForm->type = $request->type;
-            $request->type == 1 ? $appForm->place = $request->place : $appForm->place = null;
+            $appForm->place = null;
+
+            $appFormType = AppType::where('type', '=',  $request->type)->first();
+
+            if($appFormType != null && $appFormType->has_description == true){
+                $appForm->place = $request->place;
+            }
+
             $appForm->save();
         }
 
