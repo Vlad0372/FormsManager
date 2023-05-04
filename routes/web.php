@@ -48,7 +48,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/app-form-settings', [AppFormSettingsController::class, 'edit'])->name('app-form-settings.edit');
+    Route::get('/app-form-settings', [AppFormSettingsController::class, 'index'])->name('app-form-settings');
+    Route::get('/app-form-settings/{id}/edit', [AppFormSettingsController::class, 'edit'])->name('app-form-settings.edit');
 });
 
 Route::middleware('auth')->group(function () {

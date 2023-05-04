@@ -1,15 +1,10 @@
 function showHideTextarea(){
-    var selectedItem = document.getElementById("type").value;
-    var hasDesc = document.getElementById("type").getAttribute("data-hasdescription");
-
+    //var selectedItem = document.getElementById("type").value;
     //console.log(selectedItem);
-    //console.log(hasDesc);
 
     var e = document.getElementById("type");
     var value = e.value;
     var hasDesc = e.options[e.selectedIndex].getAttribute("data-hasdescription");
-
-    //console.log(value);
 
     if(hasDesc == 1){
         var txtarea = document.getElementById("placeTxtAreaDiv");
@@ -18,15 +13,6 @@ function showHideTextarea(){
         var txtarea = document.getElementById("placeTxtAreaDiv");
         txtarea.style.display = "none";
     }
-
-    // var selectedItem = document.getElementById("type").value;
-    // if(selectedItem == "1"){
-    //     var txtarea = document.getElementById("placeTxtAreaDiv");
-    //     txtarea.style.display = "block";
-    // }else{
-    //     var txtarea = document.getElementById("placeTxtAreaDiv");
-    //     txtarea.style.display = "none";
-    // }
 }
 
 function saveScrollPos(){
@@ -84,10 +70,10 @@ function restoreSelectedOption(oldValue){
         showHideTextarea();
     }else{
         var selectedItem = document.getElementById("type");
-        selectedItem.value = 3;  
+        selectedItem.value = -1;  
     } 
 }
 
-function setModalHiddenInputId(id){
-    document.getElementById('deleteAppFormHiddentInputId').value = id;
+function setModalHiddenInputId(id, modalId){
+    document.getElementById(modalId).value = id;
 }

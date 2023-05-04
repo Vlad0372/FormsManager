@@ -42,7 +42,7 @@ class AppFormRequest extends FormRequest
             'author_id' => 'nullable',
             'author_name' => 'nullable',
             'description' => 'required|string|min:3|max:200',
-            'type' => 'required|in:1,2,3',
+            'type' => 'required|exists:app_types',
             'place' => 'nullable|string|min:3|max:50',
         ];
     }

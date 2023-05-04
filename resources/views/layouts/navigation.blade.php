@@ -46,7 +46,7 @@
                             {{ __('My applications') }}
                         </x-dropdown-link>
 
-                        <x-dropdown-link :href="route('app-form-settings.edit')">
+                        <x-dropdown-link :href="route('app-form-settings')">
                             {{ __('Settings') }}
                         </x-dropdown-link>
 
@@ -115,7 +115,7 @@
                     {{ __('My applications') }}
                 </x-responsive-nav-link>
 
-                <x-responsive-nav-link :href="route('app-form-settings.edit')">
+                <x-responsive-nav-link :href="route('app-form-settings')">
                     {{ __('Settings') }}
                 </x-responsive-nav-link>
 

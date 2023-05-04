@@ -9,14 +9,14 @@
         @endpush
         <header>
             <h2 class="text-lg font-medium text-gray-900">
-                {{ __('My application forms') }}
+                {{ __('Application form types') }}
             </h2>      
             <p class="mt-1 text-sm text-gray-600">
-                {{ __('Here you can find all your application forms you`ve ever filled in.') }}
+                {{ __('Here you can find all available application form types administrator has ever created.') }}
             </p>
         </header>
         
-        @if (isset($myAppForms) && count($myAppForms) > 0)
+        @if (isset($appFormTypes) && count($appFormTypes) > 0)
             <div class="mt-4 -mb-3">
                 <div class="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25">
                     <div class="relative rounded-xl overflow-auto">
@@ -24,24 +24,25 @@
                             <table class="border-collapse table-fixed w-full text-sm">
                                 <thead>
                                     <tr>
-                                        <x-tables.th>Name</x-tables.th>
-                                        <x-tables.th>Type</x-tables.th>
-                                        <x-tables.th>Description</x-tables.th>
-                                        <x-tables.th>Place</x-tables.th>
-                                        <x-tables.th class="w-48"></x-tables.th>
-        
+                                        <x-tables.th class="w-16">Id</x-tables.th>
+                                        <x-tables.th class="">Type</x-tables.th>
+                                        <x-tables.th>Has description</x-tables.th>
+                                        <x-tables.th class="w-32"></x-tables.th> 
                                     </tr>
                                 </thead>                     
                                 <tbody class="bg-white dark:bg-slate-800">
-                                @foreach($myAppForms as $appForm)
+                                @foreach($appFormTypes as $appType)
                                     <tr>
-                                        <x-tables.td :wrap="true">{{ $appForm->app_name }}</x-tables.td>
-                                        <x-tables.td>{{ $appForm->type }}</x-tables.td>
-                                        <x-tables.td :wrap="true">{{ $appForm->description }}</x-tables.td>
-                                        <x-tables.td :wrap="true">{{ $appForm->place }}</x-tables.td>
-                                        <x-tables.td class="pl-0 pr-0">
+                                        <x-tables.td>{{ $appType->id }}</x-tables.td>
+                                        <x-tables.td :wrap="true">{{ $appType->type }}</x-tables.td>
+                                            @if($appType->has_description == 1)
+                                                <x-tables.td>Yes</x-tables.td>
+                                            @else
+                                                <x-tables.td>No</x-tables.td>
+                                            @endif             
+                                        <td class="border-b border-slate-100 dark:border-slate-700 p-4 pl-0 text-slate-500 dark:text-slate-400 wrap">
                                             <div class="flex justify-around">
-                                                <form method="post" action="{{ route('my-app-forms.edit', ['id'=>$appForm->id]) }}">
+                                                <form method="post" action="{{ route('app-form-settings.edit', ['id'=>$appType->id]) }}">
                                                     @csrf
                                                     @method('get')    
                                                     <x-primary-button class="w-11 h-8" name="action" value="repopulateForm">
@@ -49,29 +50,22 @@
                                                     </x-primary-button>
                                                 </form>
                                                 
-                                                <x-danger-button id="{{ $appForm->id }}"
+                                                <x-danger-button id="{{ $appType->id }}"
                                                                 x-data=""
-                                                                onclick="setModalHiddenInputId(this.id, 'deleteAppFormHiddentInputId')"
-                                                                x-on:click.prevent="$dispatch('open-modal', 'confirm-app-form-deletion')"                                     
+                                                                onclick="setModalHiddenInputId(this.id, 'deleteAppFormTypeHiddentInputId')"
+                                                                x-on:click.prevent="$dispatch('open-modal', 'confirm-app-form-type-deletion')"                                     
                                                                 class="w-11 h-8 -mx-4">
                                                     <i class="fa-solid fa-trash" style="color: #ffffff;"></i>
                                                 </x-danger-button>
 
-                                                <form method="post" action="{{ route('my-app-forms.pdfStream') }}" target="_blank">
-                                                    @csrf
-                                                    @method('get')    
-                                                    <x-secondary-button class="w-11 h-8" type="submit" name="appFormId" value="{{ $appForm->id }}">
-                                                        <i class="fa-solid fa-print"></i>
-                                                    </x-secondary-button>
-                                                </form> 
                                             </div>
                                                            
-                                        </x-tables.td>                                                               
+                                        </td>                                                               
                                     </tr>
                                 @endforeach    
                                 </tbody>
                             </table>
-                            @include('layouts.partials.delete-app-form-form')
+                            @include('layouts.partials.delete-app-form-type-form')
 
                         </div>
                     </div>
@@ -81,7 +75,7 @@
             </div>   
         @else
             <h2 class="text-lg font-medium text-red-500 mt-6">
-                {{ __('You have no applications') }}
+                {{ __('There are no application types') }}
             </h2>
         @endif
     </div>

@@ -13,14 +13,13 @@
 <div>
     <x-input-label for="type" :value="__('Type')" />     
     <select  id="type" name="type" required focus onchange="showHideTextarea()" class="form-control border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full mt-1">      
-        
-            @if(!isset($allAppTypes) || count($allAppTypes) == 0)
-                <option value="-1" selected>No type</option>
-            @else
-                @foreach($allAppTypes as $appType)
-                    <option data-hasdescription="{{ $appType->has_description }}" value="{{ $appType->id }}">{{ $appType->type }}</option>
-                @endforeach         
-            @endif     
+        <option value="-1" selected>--No type--</option>
+
+        @if(isset($allAppTypes) && count($allAppTypes) > 0)
+            @foreach($allAppTypes as $appType)
+                <option data-hasdescription="{{ $appType->has_description }}" value="{{ $appType->type }}">{{ $appType->type }}</option>
+            @endforeach         
+        @endif     
        
     </select>
     <x-input-error :messages="$errors->appform->first('type')" class="mt-2" /> 

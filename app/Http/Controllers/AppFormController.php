@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\URL;
 
 class AppFormController extends Controller
 {
-    private $sessionSeconds = 120;
+    private $sessionSeconds = 1120;
 
     public function GetAppFormSessionSecondsLeft(){
         $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();
@@ -71,7 +71,7 @@ class AppFormController extends Controller
     }
     public function edit(): View
     {
-        Log::info('bruh');
+        //Log::info('bruh');
         
 
         return view("app-form.edit", ['allAppTypes' => AppType::all()]);
@@ -83,7 +83,7 @@ class AppFormController extends Controller
 
         session(['_old_input.app_name' => '']);
         session(['_old_input.description' => '']);
-        session(['_old_input.type' => '3']);
+        session(['_old_input.type' => '-1']);
         session(['_old_input.place' => '']);
 
         if($lastAppFormSession == null){          
@@ -114,6 +114,7 @@ class AppFormController extends Controller
     }
     public function store(AppFormRequest $request): RedirectResponse
     {
+        //Log::info($request);
         switch ($request->input('action')) {
             case 'sendData':
                 self::ExtendAppFormSession($this->sessionSeconds);

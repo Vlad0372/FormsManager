@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AppFormRequest;
 use App\Http\Controllers\DateTimeZone;
 use App\Models\AppForm;
+use App\Models\AppType;
 use App\Models\AppFormSession;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\RedirectResponse;
@@ -26,5 +27,8 @@ class AppFormSettingsController extends Controller
     {
         return view('app-form-settings.edit');
     }
-
+    public function index(Request $request): View
+    {
+        return view('app-form-settings.index', ['appFormTypes' => AppType::all()]);
+    }
 }

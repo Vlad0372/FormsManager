@@ -16,19 +16,19 @@ return new class extends Migration
             array(
                     array(
                         'type' => 'type_with_desc',
-                        'has_description' => false
+                        'has_description' => true
                     ),
                     array(
                         'type' => 'type_without_desc',
-                        'has_description' => true
+                        'has_description' => false
                     ),
                     array(
                         'type' => 'some_type',
-                        'has_description' => true
+                        'has_description' => false
                     ),
                     array(
                         'type' => 'some_type2',
-                        'has_description' => false
+                        'has_description' => true
                     ),
             ));
     }
