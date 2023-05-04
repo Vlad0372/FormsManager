@@ -52,8 +52,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/bip-parser', [BipParserController::class, 'index'])->name('bip-parser');
-    Route::get('/bip-parser/results', [BipParserController::class, 'parse'])->name('bip-parser.parse');
+    //Route::get('/bip-parser', [BipParserController::class, 'index'])->name('bip-parser');
+    //Route::get('/bip-parser/results', [BipParserController::class, 'showResults'])->name('bip-parser.showResults');
+    Route::get('/bip-parser/results', [BipParserController::class, 'showResults'])->name('bip-parser');
 });
 
 require __DIR__.'/auth.php';

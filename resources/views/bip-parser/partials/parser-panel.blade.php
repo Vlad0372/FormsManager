@@ -9,7 +9,7 @@
         </p>
     </header>
 
-    <form method="post" action="{{ route('bip-parser.parse') }}" class="">
+    <form method="post" action="{{ route('bip-parser') }}" class="">
         @csrf
         @method('get')
 

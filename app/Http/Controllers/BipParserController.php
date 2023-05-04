@@ -21,6 +21,16 @@ class BipParserController extends Controller
         return view('bip-parser.index');
     }
 
+    public function showResults(Request $request): View
+    {
+        $arrayGroup = array(         
+            'links' => json_decode(file_get_contents("scraper_txts/links_json.txt"), true),    
+            'pageEmails' => json_decode(file_get_contents("scraper_txts/htmls_emails_json.txt"), true),
+        );
+
+        return view('bip-parser.index')->with('status', 'showLinks')
+                                       ->with('data', $arrayGroup);
+    }
     public function parse(Request $request): View
     {
         if(self::REWRITE_TXT){
@@ -30,12 +40,12 @@ class BipParserController extends Controller
             fwrite($txtFile, json_encode($jsonArray));
             fclose($txtFile);
 
-            $txtFile = fopen("txt_files/page_htmls_json.txt", "w") or die("Unable to open file!");
+            $txtFile = fopen("txt_files/page_htmls_json.txt", "w") or die("Unable to open file!");  
             $jsonArray = self::getPagesHTML($jsonArray['links']);
-
+            
             fwrite($txtFile, json_encode($jsonArray));
             fclose($txtFile);
-
+          
             return view('bip-parser.index');
         }else{
             $jsonArray = json_decode(file_get_contents("txt_files/links_json.txt"), true);
@@ -109,8 +119,6 @@ class BipParserController extends Controller
 
         $subdomainNames = array_values(array_unique($subdomainNames));
         $links = array_values(array_unique($links));
-
-        Log::info($links);
 
         $arrayGroup = array(
             'subdomainNames' => $subdomainNames,
