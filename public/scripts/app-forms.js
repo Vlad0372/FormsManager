@@ -1,7 +1,4 @@
 function showHideTextarea(){
-    //var selectedItem = document.getElementById("type").value;
-    //console.log(selectedItem);
-
     var e = document.getElementById("type");
     var value = e.value;
     var hasDesc = e.options[e.selectedIndex].getAttribute("data-hasdescription");
