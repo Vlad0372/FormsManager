@@ -56,16 +56,14 @@
                                                                 x-on:click.prevent="$dispatch('open-modal', 'confirm-app-form-type-deletion')"                                     
                                                                 class="w-11 h-8 -mx-4">
                                                     <i class="fa-solid fa-trash" style="color: #ffffff;"></i>
-                                                </x-danger-button>
-
-                                            </div>
-                                                           
+                                               </x-danger-button>
+                                            </div>                                                         
                                         </td>                                                               
                                     </tr>
                                 @endforeach    
                                 </tbody>
                             </table>
-                            @include('layouts.partials.delete-app-form-type-form')
+                            @include('layouts.partials.app-form-type.confirm-deletion')
 
                         </div>
                     </div>

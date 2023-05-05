@@ -3,12 +3,8 @@
 namespace App\Http\Controllers;
 
 use DOMDocument;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 
 class BipParserController extends Controller
 {

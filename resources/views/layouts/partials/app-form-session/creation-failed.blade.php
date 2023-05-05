@@ -1,22 +1,23 @@
-@if (session('status') === 'app-form-deleted')
-<x-modal name="app-form-updated" show="true" focusable>
+@if (session('status') === 'app-form-session-creation-failed')
+<x-modal name="app-form-session-creation-failed" show="true" focusable>
     <form method="post" action="" class="p-6">
     @csrf
     @method('delete')
 
         <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Success') }}
+            {{ __('Session is occupied') }}
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ __('Your application form has been deleted successfully.') }}
+            {{ __('Someone is already filling the application form. Wait ~2 minutes and try again.') }}
         </p>
                           
         <div class="mt-6 flex justify-end">
             <x-secondary-button x-on:click="$dispatch('close')">
                 {{ __('Close') }}
             </x-secondary-button>
-        </div>
+        </div>               
     </form>
 </x-modal>
 @endif
+            

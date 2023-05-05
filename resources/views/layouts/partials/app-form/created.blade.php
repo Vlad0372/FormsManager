@@ -1,15 +1,15 @@
-@if (session('status') === 'session-terminated')
-<x-modal name="formfill-session-is-terminated" show="true" focusable>
+@if (session('status') === 'app-form-created')
+<x-modal name="app-form-created" show="true" focusable>
     <form method="post" action="" class="p-6">
     @csrf
     @method('delete')
 
         <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Session is terminated') }}
+            {{ __('Success') }}
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ __('You have reached your time limit.') }}
+            {{ __('Your application form has been sent successfully.') }}
         </p>
                           
         <div class="mt-6 flex justify-end">
@@ -20,4 +20,3 @@
     </form>
 </x-modal>
 @endif
-           

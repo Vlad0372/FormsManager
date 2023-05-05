@@ -36,7 +36,7 @@
                                 @foreach($myAppForms as $appForm)
                                     <tr>
                                         <x-tables.td :wrap="true">{{ $appForm->app_name }}</x-tables.td>
-                                        <x-tables.td>{{ $appForm->type }}</x-tables.td>
+                                        <x-tables.td :wrap="true">{{ $appForm->type }}</x-tables.td>
                                         <x-tables.td :wrap="true">{{ $appForm->description }}</x-tables.td>
                                         <x-tables.td :wrap="true">{{ $appForm->place }}</x-tables.td>
                                         <x-tables.td class="pl-0 pr-0">
@@ -71,7 +71,7 @@
                                 @endforeach    
                                 </tbody>
                             </table>
-                            @include('layouts.partials.delete-app-form-form')
+                            @include('layouts.partials.app-form.confirm-deletion')
 
                         </div>
                     </div>

@@ -2,28 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use Illuminate\View\View;
 use App\Http\Requests\AppFormRequest;
-use App\Http\Controllers\DateTimeZone;
+use App\Models\AppFormSession;
 use App\Models\AppForm;
 use App\Models\AppType;
-use App\Models\AppFormSession;
-use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\DB;
-use App\Jobs\TerminateAppFormSessionJob;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\DB;
 
 class AppFormController extends Controller
 {
-    private $sessionSeconds = 1120;
+    private $sessionSeconds = 120;
 
-    
     public function edit(): View
     {
         return view("app-form.edit", ['allAppTypes' => AppType::all()]);
@@ -41,7 +35,7 @@ class AppFormController extends Controller
         if($lastAppFormSession == null){          
             self::OccupyAppFormSession($this->sessionSeconds);
 
-            return Redirect::route('app-form.edit')->with('status', 'form-filling-free');
+            return Redirect::route('app-form.edit')->with('status', 'app-form-session-created');
         }else{
                
             $secondsLeft = self::GetAppFormSessionSecondsLeft();
@@ -52,21 +46,20 @@ class AppFormController extends Controller
                 //======     
                 self::OccupyAppFormSession($this->sessionSeconds);
             
-                return Redirect::route('app-form.edit')->with('status', 'form-filling-free');
+                return Redirect::route('app-form.edit')->with('status', 'app-form-session-created');
             }
 
             if($secondsLeft > 0 and $lastAppFormSession->user_id == $user->id){
                 self::ExtendAppFormSession($this->sessionSeconds);
 
-                return Redirect::route('app-form.edit')->with('status', 'form-filling-free');
+                return Redirect::route('app-form.edit')->with('status', 'app-form-session-created');
             }    
         }    
         
-        return Redirect::back()->with('status', 'form-filling-occupied');  
+        return Redirect::back()->with('status', 'app-form-session-creation-failed');  
     }
     public function store(AppFormRequest $request): RedirectResponse
     {
-        //Log::info($request);
         switch ($request->input('action')) {
             case 'sendData':
                 self::ExtendAppFormSession($this->sessionSeconds);
@@ -89,7 +82,7 @@ class AppFormController extends Controller
                 
                     self::TerminateAppFormSession();
                     
-                    return Redirect::route('dashboard')->with('status', 'form-sent-successfully');
+                    return Redirect::route('dashboard')->with('status', 'app-form-created');
                 }
 
                 break;
@@ -112,7 +105,7 @@ class AppFormController extends Controller
     {
         self::TerminateAppFormSession();
         
-        return Redirect::route('dashboard')->with('status', 'session-terminated');
+        return Redirect::route('dashboard')->with('status', 'app-form-session-deleted');
     }
     public function GetAppFormSessionSecondsLeft(){
         $lastAppFormSession = DB::table('app_form_sessions')->latest()->first();

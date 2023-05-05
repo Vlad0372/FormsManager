@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AppType;
+use App\Models\AppForm;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -56,22 +57,35 @@ class AppFormSettingsController extends Controller
             return Redirect::route('app-form-settings', ['appFormTypes' => AppType::all()->reverse()]);
         }
 
-        $request->validateWithBag('appformtype', [
-            'app_type_name' => 'required|unique:app_types,type|string|min:3|max:30',
-        ]);
+        $rules = 'required|string|min:3|max:30';
+        $additionalRule = '|unique:app_types,type';
 
         $appFormType = AppType::find($request->input('appFormTypeId'));
 
+        if($appFormType->type != $request->app_type_name){
+            $rules .= $additionalRule;
+        }
+
+        $request->validateWithBag('appformtype', [
+            'app_type_name' => $rules,
+        ]);
+
         if($appFormType != null){
+            $oldTypeName = $appFormType->type;
+
             $appFormType->type = $request->app_type_name;
+
+            $recordsWithOldType = AppForm::where('type', '=', $oldTypeName);
+            $recordsWithOldType->update(['type' => $appFormType->type]);
 
             if($request->has('app-type-checkbox')){
                 $appFormType->has_description = true;
             }else{
                 $appFormType->has_description = false;
+                $recordsWithOldType->update(['place' => null]);
             }
 
-            $appFormType->save();
+            $appFormType->save();           
         }
 
         return Redirect::route('app-form-settings')->with('status', 'app-form-type-updated');
@@ -81,7 +95,12 @@ class AppFormSettingsController extends Controller
         $appFormType = AppType::find($request->input('id'));
 
         if($appFormType != null){
-            $appFormType->delete();
+
+            if (AppForm::where('type', '=', $appFormType->type)->exists()) {
+                return Redirect::route('app-form-settings')->with('status', 'app-form-type-deletion-failed');
+            }else{
+                $appFormType->delete();
+            }       
         }
 
         return Redirect::route('app-form-settings')->with('status', 'app-form-type-deleted');

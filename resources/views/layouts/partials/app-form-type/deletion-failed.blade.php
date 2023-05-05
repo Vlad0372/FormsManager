@@ -1,15 +1,15 @@
-@if (session('status') === 'form-sent-successfully')
-<x-modal name="form-sent-successfully" show="true" focusable>
-    <form method="post" action="" class="p-6">
+@if (session('status') === 'app-form-type-deletion-failed')
+<x-modal name="app-form-type-deletion-failed" show="true" focusable>
+    <form method="post" action="" class="p-6  bg-red-300">
     @csrf
     @method('delete')
 
         <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Success') }}
+            {{ __('Failure') }}
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ __('Your application form has been sent successfully.') }}
+            {{ __('The application form type can`t be deleted. There are applications with this type in the database. Remove or edit the records before the type deletion.') }}
         </p>
                           
         <div class="mt-6 flex justify-end">

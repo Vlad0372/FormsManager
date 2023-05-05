@@ -77,16 +77,18 @@
                     </svg>
                 </button>
             </div>
+                
+            @include('layouts.partials.app-form.created')
+            @include('layouts.partials.app-form.updated')
+            @include('layouts.partials.app-form.deleted')
+            
+            @include('layouts.partials.app-form-type.created')
+            @include('layouts.partials.app-form-type.updated')
+            @include('layouts.partials.app-form-type.deleted')
+            @include('layouts.partials.app-form-type.deletion-failed')
 
-            @include('layouts.partials.form-sent-successfully')
-            @include('layouts.partials.session-is-occupied')
-            @include('layouts.partials.session-is-terminated')
-            @include('layouts.partials.app-form-updated')
-            @include('layouts.partials.app-form-deleted')
-
-            @include('layouts.partials.app-form-type-created')
-            @include('layouts.partials.app-form-type-updated')
-            @include('layouts.partials.app-form-type-deleted')
+            @include('layouts.partials.app-form-session.deleted')
+            @include('layouts.partials.app-form-session.creation-failed')
         </div>
     </div>
 
