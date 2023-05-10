@@ -29,9 +29,46 @@
                             </tr>
                         </thead>
                         <tbody>
-                            
+                            @foreach($myAppForms as $appForm)
+                                <tr>
+                                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $appForm->app_name }}</th>
+                                    <td class="px-6 py-4">{{ $appForm->type }}</td>
+                                    <td class="px-6 py-4">{{ $appForm->description }}</td>
+                                    <td class="px-6 py-4">{{ $appForm->place }}</td>
+                                    
+                                    <td>
+                                        <div class="flex justify-around">
+                                            <form method="post" action="{{ route('my-app-forms.edit', ['id'=>$appForm->id]) }}">
+                                                @csrf
+                                                @method('get')    
+                                                <x-primary-button class="w-11 h-8" name="action" value="repopulateForm">
+                                                    <i class="fa-solid fa-pen-to-square" style="color: #ffffff;"></i>
+                                                </x-primary-button>
+                                            </form>
+                                            
+                                            <x-danger-button id="{{ $appForm->id }}"
+                                                            x-data=""
+                                                            onclick="setModalHiddenInputId(this.id, 'deleteAppFormHiddentInputId')"
+                                                            x-on:click.prevent="$dispatch('open-modal', 'confirm-app-form-deletion')"                                     
+                                                            class="w-11 h-8 -mx-4">
+                                                <i class="fa-solid fa-trash" style="color: #ffffff;"></i>
+                                            </x-danger-button>
+
+                                            <form method="post" action="{{ route('my-app-forms.pdfStream') }}" target="_blank">
+                                                @csrf
+                                                @method('get')    
+                                                <x-secondary-button class="w-11 h-8" type="submit" name="appFormId" value="{{ $appForm->id }}">
+                                                    <i class="fa-solid fa-print"></i>
+                                                </x-secondary-button>
+                                            </form> 
+                                        </div>
+                                                        
+                                    </td>                                                               
+                                </tr>
+                            @endforeach 
                         </tbody>
                     </table>
+                    @include('layouts.partials.app-form.confirm-deletion')
                 </div>
         @endif
 
