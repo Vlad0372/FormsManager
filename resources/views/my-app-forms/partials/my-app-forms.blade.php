@@ -1,5 +1,5 @@
 <section>
-    <div class="max-w-2xl">
+    <div class="max-w-full">
         @push('app_forms_scripts')
             <script src="{{ asset('/scripts/app-forms.js') }}"></script>
             <script src="https://kit.fontawesome.com/cde750a9b3.js" crossorigin="anonymous"></script>
@@ -17,167 +17,71 @@
         </header>
         
         @if (isset($myAppForms) && count($myAppForms) > 0)
-                <div class="mt-8 relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" class="px-6 py-3">Name</th>
-                                <th scope="col" class="px-6 py-3">Type</th>
-                                <th scope="col" class="px-6 py-3">Description</th>
-                                <th scope="col" class="px-6 py-3">Place</th>
-                                <th scope="col" class="px-6 py-3"></th>
+        <div class="mt-8 p-2 relative overflow-x-auto">
+            <h2 class="p-2 text-lg font-medium text-green-700">
+                {{ __('The new styled table') }}
+            </h2>
+            <div class="relative overflow-x-auto w-[1000px] max-w-[1000px] shadow-md sm:rounded-lg">
+                <table class="table-fixed w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 w-[18%] py-3">Name</th>
+                            <th scope="col" class="px-6 w-[16%] py-3">Type</th>
+                            <th scope="col" class="px-6 w-[28%] py-3">Description</th>
+                            <th scope="col" class="px-6 w-[20%] py-3">Place</th>
+                            <th scope="col" class="px-6 w-[18%] py-3"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($myAppForms as $appForm)
+                            <tr class="{{ $loop->index % 2 == 0 ? 'bg-white border-b dark:bg-gray-900 dark:border-gray-700' : 'border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700'  }}">
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 wrap dark:text-white">{{ $appForm->app_name }}</th>
+                                <td class="px-6 py-4 wrap">{{ $appForm->type }}</td>
+                                <td class="px-6 py-4 wrap break-words">{{ $appForm->description }}</td>
+                                <td class="px-6 py-4 wrap">{{ $appForm->place }}</td>
+                                
+                                <td>
+                                    <div class="flex justify-around">
+                                        <form class="pl-2" method="post" action="{{ route('my-app-forms.edit', ['id'=>$appForm->id]) }}">
+                                            @csrf
+                                            @method('get')    
+                                            <x-primary-button class="w-11 h-8" name="action" value="repopulateForm">
+                                                <i class="fa-solid fa-pen-to-square" style="color: #ffffff;"></i>
+                                            </x-primary-button>
+                                        </form>
+                                        
+                                        <x-danger-button id="{{ $appForm->id }}"
+                                                        x-data=""
+                                                        onclick="setModalHiddenInputId(this.id, 'deleteAppFormHiddentInputId')"
+                                                        x-on:click.prevent="$dispatch('open-modal', 'confirm-app-form-deletion')"                                     
+                                                        class="w-11 h-8 -mx-4">
+                                            <i class="fa-solid fa-trash" style="color: #ffffff;"></i>
+                                        </x-danger-button>
+
+                                        <form method="post" action="{{ route('my-app-forms.pdfStream') }}" target="_blank">
+                                            @csrf
+                                            @method('get')    
+                                            <x-secondary-button class="w-11 h-8" type="submit" name="appFormId" value="{{ $appForm->id }}">
+                                                <i class="fa-solid fa-print"></i>
+                                            </x-secondary-button>
+                                        </form> 
+                                    </div>
+                                                    
+                                </td>                                                               
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($myAppForms as $appForm)
-                                <tr>
-                                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $appForm->app_name }}</th>
-                                    <td class="px-6 py-4">{{ $appForm->type }}</td>
-                                    <td class="px-6 py-4">{{ $appForm->description }}</td>
-                                    <td class="px-6 py-4">{{ $appForm->place }}</td>
-                                    
-                                    <td>
-                                        <div class="flex justify-around">
-                                            <form method="post" action="{{ route('my-app-forms.edit', ['id'=>$appForm->id]) }}">
-                                                @csrf
-                                                @method('get')    
-                                                <x-primary-button class="w-11 h-8" name="action" value="repopulateForm">
-                                                    <i class="fa-solid fa-pen-to-square" style="color: #ffffff;"></i>
-                                                </x-primary-button>
-                                            </form>
-                                            
-                                            <x-danger-button id="{{ $appForm->id }}"
-                                                            x-data=""
-                                                            onclick="setModalHiddenInputId(this.id, 'deleteAppFormHiddentInputId')"
-                                                            x-on:click.prevent="$dispatch('open-modal', 'confirm-app-form-deletion')"                                     
-                                                            class="w-11 h-8 -mx-4">
-                                                <i class="fa-solid fa-trash" style="color: #ffffff;"></i>
-                                            </x-danger-button>
-
-                                            <form method="post" action="{{ route('my-app-forms.pdfStream') }}" target="_blank">
-                                                @csrf
-                                                @method('get')    
-                                                <x-secondary-button class="w-11 h-8" type="submit" name="appFormId" value="{{ $appForm->id }}">
-                                                    <i class="fa-solid fa-print"></i>
-                                                </x-secondary-button>
-                                            </form> 
-                                        </div>
-                                                        
-                                    </td>                                                               
-                                </tr>
-                            @endforeach 
-                        </tbody>
-                    </table>
-                    @include('layouts.partials.app-form.confirm-deletion')
-                </div>
+                        @endforeach 
+                    </tbody>
+                </table>
+                @include('layouts.partials.app-form.confirm-deletion')
+            </div>
+        </div>   
         @endif
-
-        @if (isset($myAppForms) && count($myAppForms) > 0)
-
-        <div class="mt-8 relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">Name</th>
-                        <th scope="col" class="px-6 py-3">Type</th>
-                        <th scope="col" class="px-6 py-3">Description</th>
-                        <th scope="col" class="px-6 py-3">Place</th>
-                        <th scope="col" class="px-6 py-3"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Apple MacBook Pro 17"
-                        </th>
-                        <td class="px-6 py-4">
-                            Silver
-                        </td>
-                        <td class="px-6 py-4">
-                            Laptop
-                        </td>
-                        <td class="px-6 py-4">
-                            $2999
-                        </td>
-                        <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
-                    <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Microsoft Surface Pro
-                        </th>
-                        <td class="px-6 py-4">
-                            White
-                        </td>
-                        <td class="px-6 py-4">
-                            Laptop PC
-                        </td>
-                        <td class="px-6 py-4">
-                            $1999
-                        </td>
-                        <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Magic Mouse 2
-                        </th>
-                        <td class="px-6 py-4">
-                            Black
-                        </td>
-                        <td class="px-6 py-4">
-                            Accessories
-                        </td>
-                        <td class="px-6 py-4">
-                            $99
-                        </td>
-                        <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
-                    <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Google Pixel Phone
-                        </th>
-                        <td class="px-6 py-4">
-                            Gray
-                        </td>
-                        <td class="px-6 py-4">
-                            Phone
-                        </td>
-                        <td class="px-6 py-4">
-                            $799
-                        </td>
-                        <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Apple Watch 5
-                        </th>
-                        <td class="px-6 py-4">
-                            Red
-                        </td>
-                        <td class="px-6 py-4">
-                            Wearables
-                        </td>
-                        <td class="px-6 py-4">
-                            $999
-                        </td>
-                        <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        @endif
-
-        @if (isset($myAppForms) && count($myAppForms) < 0)
-            <div class="mt-4 -mb-3">
+  
+        @if (isset($myAppForms) && count($myAppForms) > 0)      
+        <div class="mt-4 -mb-3">
+            <h2 class="p-2 text-lg font-medium text-red-600">
+                {{ __('The old styled table') }}
+            </h2>
                 <div class="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25">
                     <div class="relative rounded-xl overflow-auto">
                         <div class="shadow-sm overflow-hidden my-8">
